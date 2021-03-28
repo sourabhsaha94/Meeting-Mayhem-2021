@@ -1,63 +1,111 @@
 import React, { useState } from "react";
-import "./Login.css";
+import { Redirect } from 'react-router-dom'
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [login, setLogin] = useState("Unsuccessfull");
+        const [uid, setUID] = useState('');
+        const [userName, setUserName] = useState('');
+        const [password, setPassword] = useState('');
+      
+    function validateForm() {
+        return userName.length > 0 && password.length > 0;
+    }
 
-  function validateForm() {
-    return email.length > 0 && password.length > 0;
-  }
+    function onSubmit(e) {
 
-  function handleSubmit(event) {
-    fetch('/login').then(res => res.json()).then(data => {
-      setLogin("Successful");
-    });
-    event.preventDefault();
+        e.preventDefault();
+        
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Access-Control-Request-Method': 'POST'
+            , 'Access-Control-Request-Headers': '*'},
+            body: JSON.stringify({ 
+                'email': userName,
+                'password': password
+              })
+        };
 
-    fetch('/login', {
-        method: 'POST',
-        body: JSON.stringify({"userName":email,"password":password}),
-        headers: {
-          'Content-Type':'text/plain'
-        }
-      }).then(function(response) {
-        console.log(response)
-        setLogin("Successful");
-      });
+        fetch('/login', requestOptions)
+        .then(response => {
+            // check for error response
+            if (!response.ok) {
+                // get error message from body or default to response statusText
+                const error = "There was some problem in the request. Please try again."
+                return Promise.reject(error);
+            }
+            return response.json()
+        })
+        .then(data => {
 
-  }
+            console.log(data)
+            // if (data.statusCode != 200) {
+            //     // get error message from body or default to response statusText
+            //     console.log("returning");
+            //     const error = (JSON.parse(data.body)).message
+            //     return Promise.reject(error);
+            // }
+            // const parsedData = (JSON.parse(data))
+            // console.log(parsedData);
+            if(data.URI!='')
+            {
+                console.log("HIIII");
+                setUID(data.URI);
+            }
+            else
+            {
+                console.log("NOOO");
+            }
+        })
+        .catch(error => {
+            console.error('There was an error!', error);
+            alert(error)
+        });
+    
+    }
 
-  return (
-    <div className="Login">
-       
+    function handleuserNameChange(e) {
+            setUserName(e.target.value);           
+    }
 
-        <form
-                    id="main-login"
-                    onSubmit = {handleSubmit}>
-                    <h2>
-                        Enter your Email Id and password to Login
-                    </h2>
-                    <label>
-                        <span className="text">User Name:</span>
-                        <input type="text" name="message" onChange={(e) => setEmail(e.target.value)}/><br/>
-                    </label>
-                    <br/>
-                    <label>
-                        <span className="text">Password:</span>
-                        <input type="text" name="message"onChange={(e) => setPassword(e.target.value)}/><br/>
-                    </label>
-                    <br/>
-          
-                    <div className="align-right">
-                        <button type="submit" disabled={!validateForm()}>Login</button>
-                    </div>
+    function handlePasswordChange(e) {
+        setPassword(e.target.value);
+    }
+    
+    if (uid!='') {
+        return (
+            <Redirect to={{pathname: "/home", state: { uname: userName, uid: uid}} }/>
+        )     
+    }
+    return (
+        
+        <div class="row" style={{paddingTop:100}}>
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+            <div class="col-md-1"></div>
+                <div class="col-md-8">
+            
+            <form>
+            <h3>Sign In</h3>
 
-                    <div>
-                      <span className="text">{login}</span>
-                    </div>
-                </form>
-    </div>
-  );
+            <div className="form-group">
+                <input type="text" className="form-control" placeholder="Enter email*" onChange={handleuserNameChange} />
+            </div>
+
+            <div className="form-group">
+                <input type="password" className="form-control" placeholder="Enter password*" onChange={handlePasswordChange}/>
+            </div>
+
+            <div class="row">
+                
+            </div>
+
+            <button type="button" className="btn btn-primary btn-block" disabled={!validateForm()} onClick={onSubmit}>Login</button>
+            <p className="forgot-password text-right">
+                New user ? <a href="/sign-up">Register here</a>
+            </p>
+        </form>
+        </div>
+        
+        </div><div class="col-md-4"></div>
+        </div>
+    );
 }
