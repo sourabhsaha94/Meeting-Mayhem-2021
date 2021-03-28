@@ -19,15 +19,7 @@ def get_current():
     print(user)  
     print(pwd) 
 
-    
 
-    # the_response = Response()
-    # the_response.code = "expired"
-    # the_response.error_type = "expired"
-    # the_response.status_code = 200
-    # the_response._content = b'{ "uri" : "1234" }'
-
-    # print(the_response.json())
 
     responseObject = {}
     responseObject['URI'] = '1234';

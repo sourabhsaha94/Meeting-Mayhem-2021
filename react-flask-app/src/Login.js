@@ -47,7 +47,7 @@ export default function Login() {
             // console.log(parsedData);
             if(data.URI!='')
             {
-                console.log("HIIII");
+                
                 setUID(data.URI);
             }
             else
