@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Redirect } from 'react-router-dom'
 
 export default function Login() {
+
         const [uid, setUID] = useState('');
         const [userName, setUserName] = useState('');
         const [password, setPassword] = useState('');
@@ -36,7 +37,6 @@ export default function Login() {
         })
         .then(data => {
 
-            console.log(data)
             // if (data.statusCode != 200) {
             //     // get error message from body or default to response statusText
             //     console.log("returning");
@@ -57,7 +57,7 @@ export default function Login() {
         })
         .catch(error => {
             console.error('There was an error!', error);
-            alert(error)
+            alert("There was an error, please try again!")
         });
     
     }

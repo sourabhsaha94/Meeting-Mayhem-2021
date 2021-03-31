@@ -16,11 +16,30 @@ def get_current():
     loginInfo = json.loads(request.data)
     user = loginInfo['email']
     pwd = loginInfo['password']
-    print(user)  
-    print(pwd) 
-
 
 
     responseObject = {}
     responseObject['URI'] = '1234';
+    return responseObject, 200
+
+@app.route('/sendmessage',methods=["POST"])
+def send_message():
+    print("inside send message")
+    messageInfo = json.loads(request.data)
+    sender = messageInfo['sender']
+    receiver = messageInfo['receiver']
+    message = messageInfo['message']
+
+
+    responseObject = {}
+    responseObject['messageID'] = 'dsfdsf37129';
+    return responseObject, 200
+
+
+@app.route('/getrecipients',methods=["GET"])
+def get_recipients():
+
+
+    responseObject = {}
+    responseObject['recipients'] = [{'id':2, 'name':'Akriti'},{'id':3, 'name':'Ryan'},{'id':4, 'name':'Julie'}]
     return responseObject, 200

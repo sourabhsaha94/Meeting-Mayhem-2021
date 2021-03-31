@@ -31,7 +31,6 @@ const [currentTime, setCurrentTime] = useState(0);
           
           <Switch>
             <Route exact path='/' component={Login} />
-            <Route path="/logout" component={Login} />
             {/* <Route path="/sign-up" component={SignUp} /> */}
             <Route path="/home" component={Main} />
           </Switch>
