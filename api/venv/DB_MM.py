@@ -23,7 +23,8 @@ from sqlalchemy import exc
 #all letters and numbers for random PW generation
 CHARLIST = string.ascii_letters + string.digits
 #global vars
-messageIDCount = 0 #this isitterated as time goes on, might move
+#TODO: dynamically update messageIDCount based on the database's state
+messageIDCount = 7 #this isitterated as time goes on, might move
 messageIDList = [] #this holds all message id's for checking
 #this is the location for the flask app, can be automated later
 workingFolder = "/" #TODO: Figure this out
@@ -113,13 +114,15 @@ def addMessageToDB(submitedMessage, userID, messageIsModded = False, oMessage = 
 	db.session.add(message)
 	#commit db
 	db.session.commit()
+
 #pull messages from db
 def getUserMessageFromDB(usernameInput, gameRound = -1):
-	#get user from username
-	user = Userdata.query.filter_by(username=usernameInput).first()
-	#get users messages
-	messageList = user.UserSentMessages
+	#get all messages from UserSentMessages where recipient is our user
+	messageList = UserSentMessages.query.filter_by(recipient=usernameInput).all()
+
+	print("getUserMessageFromDB",messageList,flush=True)
 	formattedMessageList = []
+	#TODO: format game round in the SQL query instead?
 	if gameRound == -1:
 		#if no gameround chosen, return all messages
 		for message in messageList:

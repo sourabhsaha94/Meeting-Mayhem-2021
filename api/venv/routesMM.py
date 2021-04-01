@@ -11,9 +11,10 @@ functions for misc. tasks
 """
 #imports
 from flask import render_template, url_for, flash, redirect, request, session
-from MeetingMayhem import app
-from MeetingMayhem.formsMM import userMessageForm, LoginForm, advMessageForm, menuForm
-from MeetingMayhem.DB_MM import messageSplit, addMessageToDB, checkUserLogin, updateGMRole, userGen
+#from MeetingMayhem import app
+from venv import app
+from venv.formsMM import userMessageForm, LoginForm, advMessageForm, menuForm
+from venv.DB_MM import messageSplit, addMessageToDB, checkUserLogin, updateGMRole, userGen
 from flask_login import login_user, current_user, logout_user, login_required
 
 #data holders

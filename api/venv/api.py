@@ -88,7 +88,8 @@ def get_messages():
 	print("  msgs:", msgs, flush=True)
 
 	responseObject = {}
-	responseObject['messages'] = [{'id':2, 'name':'Akriti'},{'id':3, 'name':'Ryan'},{'id':4, 'name':'Julie'}]
+	responseObject['messages'] = msgs
+	
 	return responseObject, 200
 
 @app.route('/getrecipients',methods=["GET"])
