@@ -56,7 +56,10 @@ def send_message():
 	print("  recver:",receiver)
 	print("  msg:",message, flush=True) #flush=True because console doesn't show prints in realtime
 
+	#TODO: unify sendMessage and send_message
+	DB_MM.sendMessage(sender,receiver,message)
 
+	print("  post sendMessage",flush=True)
 	#raise Exception("send message", message)
 	responseObject = {}
 	responseObject['messageID'] = 'dsfdsf37129';
@@ -69,6 +72,24 @@ def send_message():
 
 	return responseObject, 200
 
+@app.route('/getmessages',methods=["GET"])
+def get_messages():
+	username = request.args.get('user', default = 'Alice', type = str)
+	print("inside get message")
+	#messageInfo = json.loads(request.data)
+	#sender = messageInfo['sender']
+	#receiver = messageInfo['receiver']
+	#message = messageInfo['message']
+
+	print("  so:",username,flush=True)
+
+	msgs = DB_MM.getUserMessageFromDB(username)
+
+	print("  msgs:", msgs, flush=True)
+
+	responseObject = {}
+	responseObject['messages'] = [{'id':2, 'name':'Akriti'},{'id':3, 'name':'Ryan'},{'id':4, 'name':'Julie'}]
+	return responseObject, 200
 
 @app.route('/getrecipients',methods=["GET"])
 def get_recipients():

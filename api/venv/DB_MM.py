@@ -66,9 +66,24 @@ class UserSentMessages(db.Model):
 	originalSender = db.Column(db.String(20), nullable=False)
 	round_number = db.Column(db.Integer, nullable=False)
 
+def sendMessage(sender,receiver,text):
+
+	print("sendMessage sender", sender, sender[0], flush=True)
+	#TODO: unify receiver vs recipient vs... destination?
+	messageDict = {"Round":-1, "Sender":sender[0]['name'], "Recipient":receiver,
+	"Time":1,  "Place":1, "Key":1,
+	"Encrypt":False, "Message":text,  "MessageID":1,
+	"OriginalSender":sender}
+
+	userID = sender[0]['id'] #TODO: this could eventually be adversary?
+
+	addMessageToDB(messageDict, userID)
+
+
 #functions
 #add messages to db
 def addMessageToDB(submitedMessage, userID, messageIsModded = False, oMessage = {}):
+	global messageIDCount
 	#if messageIsModded, add to appropreate DB
 	# update ID
 	if messageIsModded:
@@ -83,9 +98,12 @@ def addMessageToDB(submitedMessage, userID, messageIsModded = False, oMessage = 
 		while messageID in messageIDList:
 			messageID += 1
 		#add new id to list
-		messageIDList.add(messageID)
+		#messageIDList.add(messageID)
+		messageIDList.append(messageID)
 		#ready data for db input
 		originalSender = submitedMessage["Sender"]
+
+		print("addMessage submittedMessage",submitedMessage,flush=True)
 	#ready data for db input
 	message = UserSentMessages(sender=submitedMessage["Sender"], recipient=submitedMessage["Recipient"], time_choice=submitedMessage["Time"],
 		place_choice=submitedMessage["Place"], key_choice=submitedMessage["Key"], message=submitedMessage["Message"],
