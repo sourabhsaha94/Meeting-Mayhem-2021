@@ -15,6 +15,9 @@ from datetime import datetime
 import secrets
 import string
 
+#TODO: Remove this, it's only for testing one error.
+from flask_sqlalchemy import SQLAlchemy #this is for managing databases
+from sqlalchemy import exc
 
 #constants
 #all letters and numbers for random PW generation
@@ -23,7 +26,8 @@ CHARLIST = string.ascii_letters + string.digits
 messageIDCount = 0 #this isitterated as time goes on, might move
 messageIDList = [] #this holds all message id's for checking
 #this is the location for the flask app, can be automated later
-workingFolder = "/home/eyeclept/Documents/FlaskGame/test/MeetingMayhem/"
+workingFolder = "/" #TODO: Figure this out
+
 
 #need for login, loads user
 @loginManager.user_loader
@@ -173,12 +177,18 @@ def messageSplit(messages):
 
 	return(Round, Sender, Recipient, Time, Place, Key, Encrypt, MessageText, MessageID, OriginalSender)
 #adds user to db
-def addUserDB(usernameInput, passwordInput, role1Input, role2Input = ""):
-	user = Userdata(username = usernameInput, password = passwordInput, role1 = role1Input, role2 = role2Input)
-	#submit db
-	db.session.add(user)
-	#commit db
-	db.session.commit()
+def addUserDB(usernameInput, passwordInput, role1Input, role2Input = "", autoRollback = True):
+
+	try:
+		user = Userdata(username = usernameInput, password = passwordInput, role1 = role1Input, role2 = role2Input)
+		#submit db
+		db.session.add(user)
+		#commit db
+		db.session.commit()
+	except exc.IntegrityError:
+		if autoRollback:
+			db.session.rollback()
+
 #updates gm role after setup
 def updateGMRole(newRole):
 	gm = Userdata.query.filter_by(username="GM").first()
@@ -186,6 +196,8 @@ def updateGMRole(newRole):
 #setup db
 def dbInit():
 	print("dbInit() starting",flush=True)
+
+	#TODO: consider if necessary.
 	#check if paused file exists, set pause if true
 	with open("pause.txt", "r") as pauseFile:
 		pausedRaw = pauseFile.read()
@@ -195,6 +207,7 @@ def dbInit():
 			paused = False
 	if paused:
 		#if paused, mark paused file as false. i.e. unpause
+		print("Am paused!",flush=True)
 		with open("pause.txt", "w") as pauseFile:
 			pauseFile.write("False")
 	else:
@@ -202,19 +215,44 @@ def dbInit():
 		#get time info
 		timeStr = getTime()
 		#backup and delete db
-		backupNDeleteDB(timeStr)	
+		backupNDeleteDB(timeStr)
 		#create new db
 		db.create_all()
 
 		#move pwfile to match backup db, delet pw file
-		backupFlieName = timeStr + "--" + PW_File + ".bak"
-		copy(PW_File, backupFlieName)
+		backupFileName = timeStr + "--" + PW_File + ".bak"
+		copy(PW_File, backupFileName)
 		deleteFile(PW_File)
 
 		#generate GM
 		encryptedPassword = initGMSetup()
-		addUserDB("GM", encryptedPassword, "GM", "Spectator")
-		print("GM user added")
+
+		try:
+			addUserDB("GM", encryptedPassword, "GM", "Spectator")
+		except: #TODO: You can do this but you shouldn't
+			print("Whoops! We've already added GM!",flush=True)
+			db.session.rollback()
+			#return False
+
+		print("passed the add GM line",flush=True)
+
+		with open("loginDefault.txt", "r") as loginFile:
+			lines = list(loginFile)
+			print("Lines:")
+			print(lines,flush=True)
+			for line in lines:
+				a = line.split(":")
+				if a[0] == "GM":
+					continue
+				#TODO: remove/integrate userGen()
+				print("making user",a[0],flush=True)
+				CreateUser("User",a[0],a[1]) #pwLen is defaulted #
+
+		print("passed the login Default line",flush=True)
+
+		#TODO: Figure out why dbInit gets called more than once sometimes
+		#TODO: remove this very risky, confusing workaround
+		dbInit.code = (lambda:None).func_code
 #close db
 def dbExit(pause = False):
 	if pause:
@@ -232,9 +270,9 @@ def dbExit(pause = False):
 #backup db
 def backupNDeleteDB(timeStr):
 		#format backup file name
-		backupFlieName = timeStr + "--" + DB_FILE_NAME + ".bak"
+		backupFileName = timeStr + "--" + DB_FILE_NAME + ".bak"
 		#copy backup file
-		copy(DB_FILE_NAME, backupFlieName)
+		copy(DB_FILE_NAME, backupFileName)
 		#delete db file
 		deleteFile(DB_FILE_NAME)
 #Get time formatted

@@ -17,6 +17,8 @@ from flask_sqlalchemy import SQLAlchemy #this is for managing databases
 from flask_bcrypt import Bcrypt #this is for encryption things
 from flask_login import LoginManager # this manages logins
 
+
+
 #constants
 PW_File = "login.txt" #this is the file name for the password file
 DB_FILE_NAME = "site.db" #this is the name for the database file
@@ -36,6 +38,21 @@ loginManager.login_view = "login"
 #import routes for the flask app
 print("__init__.py before apiimport",flush=True)
 
-from venv import api
+
 print("__init__.py running!!",flush=True)
 #from venv import routesMM
+
+#import later so we can import constants above sugh as DB_FILE_NAME (?)
+from venv.DB_MM import dbInit
+from venv import api
+
+
+#TODO: figure out why dbInit() gets called without this line.
+dbInit()
+#print("did dbInit", flush=True)
+
+#TODO: only dbInit if we're the main function
+#TODO: figure out how to only dbInit once, tell "if we're the main function"
+#if __name__ == "__main__":
+#	print("i am main, doing dbInit",flush=True)
+#	dbInit()

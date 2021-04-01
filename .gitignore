@@ -4,5 +4,8 @@ react-flask-app/node_modules/
 react-flask-app/.DS_Store
 /api/venv/venv
 api/venv/__pycache__/
+api/venv/__pycache__/*
 
 react-flask-app/package-lock.json
+api/venv/*.db
+api/venv/login.txt
