@@ -34,4 +34,8 @@ bcrypt = Bcrypt(app)
 loginManager = LoginManager(app)
 loginManager.login_view = "login"
 #import routes for the flask app
-from MeetingMayhem import routesMM
+print("__init__.py before apiimport",flush=True)
+
+from venv import api
+print("__init__.py running!!",flush=True)
+#from venv import routesMM

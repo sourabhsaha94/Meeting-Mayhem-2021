@@ -1,13 +1,14 @@
- 
+
 """
 File:    DB_MM.py
 Author:  Richard Baldwin
 Date:    10/2/2020
 E-mail:  richardbaldwin@umbc.edu
 Description: this manages DB thigs and password things
-      
+
 """
-from MeetingMayhem import db, DB_FILE_NAME, PW_File, loginManager, bcrypt
+#from MeetingMayhem import db, DB_FILE_NAME, PW_File, loginManager, bcrypt
+from venv import db, DB_FILE_NAME, PW_File, loginManager, bcrypt
 from flask_login import UserMixin
 import subprocess
 from datetime import datetime
@@ -17,12 +18,12 @@ import string
 
 #constants
 #all letters and numbers for random PW generation
-CHARLIST = string.ascii_letters + string.digits 
+CHARLIST = string.ascii_letters + string.digits
 #global vars
 messageIDCount = 0 #this isitterated as time goes on, might move
 messageIDList = [] #this holds all message id's for checking
 #this is the location for the flask app, can be automated later
-workingFolder = "/home/eyeclept/Documents/FlaskGame/test/MeetingMayhem/" 
+workingFolder = "/home/eyeclept/Documents/FlaskGame/test/MeetingMayhem/"
 
 #need for login, loads user
 @loginManager.user_loader
@@ -37,7 +38,7 @@ UserMixin is used to manage some functionality for login stuff
 #user data such as login stuff
 class Userdata(db.Model, UserMixin):
 	id = db.Column(db.Integer, primary_key=True) #this is the id for the DB entry
-	username = db.Column(db.String(20), unique=True, nullable=False) 
+	username = db.Column(db.String(20), unique=True, nullable=False)
 	password = db.Column(db.String(60), nullable=False)
 	role1 = db.Column(db.String(20), nullable=False) #this is the users role
 	role2 = db.Column(db.String(20)) #if the user is GM, the second role tells their main role
@@ -58,7 +59,7 @@ class UserSentMessages(db.Model):
 	#this is from
 	user_id = db.Column(db.Integer, db.ForeignKey('userdata.id'), nullable=False)
 	#this is the same as sender unless modefied by the adversary
-	originalSender = db.Column(db.String(20), nullable=False) 
+	originalSender = db.Column(db.String(20), nullable=False)
 	round_number = db.Column(db.Integer, nullable=False)
 
 #functions
@@ -68,8 +69,8 @@ def addMessageToDB(submitedMessage, userID, messageIsModded = False, oMessage = 
 	# update ID
 	if messageIsModded:
 		#ready data for db input
-		messageID=oMessage["MessageID"] 
-		originalSender = oMessage["Sender"] 
+		messageID=oMessage["MessageID"]
+		originalSender = oMessage["Sender"]
 	else:
 		#increment message count
 		messageIDCount += 1
@@ -78,13 +79,13 @@ def addMessageToDB(submitedMessage, userID, messageIsModded = False, oMessage = 
 		while messageID in messageIDList:
 			messageID += 1
 		#add new id to list
-		messageIDList.add(messageID)		
+		messageIDList.add(messageID)
 		#ready data for db input
-		originalSender = submitedMessage["Sender"] 
+		originalSender = submitedMessage["Sender"]
 	#ready data for db input
-	message = UserSentMessages(sender=submitedMessage["Sender"], recipient=submitedMessage["Recipient"], time_choice=submitedMessage["Time"], 
+	message = UserSentMessages(sender=submitedMessage["Sender"], recipient=submitedMessage["Recipient"], time_choice=submitedMessage["Time"],
 		place_choice=submitedMessage["Place"], key_choice=submitedMessage["Key"], message=submitedMessage["Message"],
-		encrypt_check=submitedMessage["Encrypt"], message_id=messageID, originalSender = originalSender, round_number=submitedMessage["Round"], 
+		encrypt_check=submitedMessage["Encrypt"], message_id=messageID, originalSender = originalSender, round_number=submitedMessage["Round"],
 		user_id = userID)
 	#submit db
 	db.session.add(message)
@@ -109,8 +110,8 @@ def getUserMessageFromDB(usernameInput, gameRound = -1):
 	return(formattedMessageList)
 # takes message from db, and outputs it as dict
 def formatMessagesFromDB(messageInput):
-	messageDict = {"Round":messageInput.round_number, "Sender":messageInput.sender, "Recipient":messageInput.recipient, "Time":messageInput.time_choice, 
-				"Place":messageInput.place_choice, "Key":messageInput.key_choice, "Encrypt":messageInput.encrypt_check, "Message":messageInput.message, 
+	messageDict = {"Round":messageInput.round_number, "Sender":messageInput.sender, "Recipient":messageInput.recipient, "Time":messageInput.time_choice,
+				"Place":messageInput.place_choice, "Key":messageInput.key_choice, "Encrypt":messageInput.encrypt_check, "Message":messageInput.message,
 				"MessageID":messageInput.message_id, "OriginalSender":messageInput.originalSender}
 
 	#Formating-> round (integer), sender (string), recipient (string), time_choice (int), place
@@ -177,13 +178,14 @@ def addUserDB(usernameInput, passwordInput, role1Input, role2Input = ""):
 	#submit db
 	db.session.add(user)
 	#commit db
-	db.session.commit()	
+	db.session.commit()
 #updates gm role after setup
 def updateGMRole(newRole):
 	gm = Userdata.query.filter_by(username="GM").first()
 	gm.role2 = newRole
 #setup db
 def dbInit():
+	print("dbInit() starting",flush=True)
 	#check if paused file exists, set pause if true
 	with open("pause.txt", "r") as pauseFile:
 		pausedRaw = pauseFile.read()
@@ -196,11 +198,11 @@ def dbInit():
 		with open("pause.txt", "w") as pauseFile:
 			pauseFile.write("False")
 	else:
-		#else backup and delete old db, and create new DB. 
+		#else backup and delete old db, and create new DB.
 		#get time info
 		timeStr = getTime()
 		#backup and delete db
-		backupNDeleteDB(timeStr)
+		backupNDeleteDB(timeStr)	
 		#create new db
 		db.create_all()
 
@@ -278,13 +280,13 @@ def userGen(GMisAdversary = True, users = ["Alice", "Bob", "Charlie", "Dan", "Ev
 #creates user w/ random password (can be found in login.txt)
 def CreateUser(role, name, pwLen = 12):
 	#generate username and password for GM
-        #TODO: Revert/update this to make actually secure passwords
+	#TODO: Revert/update this to make actually secure passwords
 	#password = PasswordGen(pwLen)
-        password = "password"
-        
+	password = "password"
+
 	#output info to file
 	with open(PW_File, "a") as loginInfoFile:
-		info = name + ":" + password + "\n" 
+		info = name + ":" + password + "\n"
 		loginInfoFile.write(info)
 
 	#encrypt password
@@ -305,7 +307,7 @@ def initGMSetup(pwLen = 12):
 	password = PasswordGen(pwLen)
 	#output info to file
 	with open(PW_File, "a") as loginInfoFile:
-		info = "GM:" + password + "\n" 
+		info = "GM:" + password + "\n"
 		loginInfoFile.write(info)
 
 	#encrypt password

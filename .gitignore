@@ -3,6 +3,6 @@ react-flask-app/node_modules/
 .vscode/
 react-flask-app/.DS_Store
 /api/venv/venv
-api/venv/__pycache__/api.cpython-37.pyc
+api/venv/__pycache__/
 
 react-flask-app/package-lock.json
