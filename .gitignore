@@ -2,3 +2,4 @@ react-flask-app/node_modules/
 .DS_Store
 .vscode/
 react-flask-app/.DS_Store
+/api/venv/venv
