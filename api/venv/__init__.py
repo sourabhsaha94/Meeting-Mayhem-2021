@@ -17,7 +17,7 @@ from flask_sqlalchemy import SQLAlchemy #this is for managing databases
 from flask_bcrypt import Bcrypt #this is for encryption things
 from flask_login import LoginManager # this manages logins
 
-
+print("__init__ started!",flush=True)
 
 #constants
 PW_File = "login.txt" #this is the file name for the password file
@@ -29,6 +29,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'V^sPcWUSvLlNo5uY8bCe'
 #database  setup, the DB is attached to the db variable
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///"+DB_FILE_NAME
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True #TODO: turn this to False when in Production
+
 db = SQLAlchemy(app)
 #encryption setup
 bcrypt = Bcrypt(app)

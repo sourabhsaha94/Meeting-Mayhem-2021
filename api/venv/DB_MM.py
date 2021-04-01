@@ -245,14 +245,15 @@ def dbInit():
 				if a[0] == "GM":
 					continue
 				#TODO: remove/integrate userGen()
-				print("making user",a[0],flush=True)
+				#print("making user",a[0],flush=True)
 				CreateUser("User",a[0],a[1]) #pwLen is defaulted #
 
 		print("passed the login Default line",flush=True)
 
 		#TODO: Figure out why dbInit gets called more than once sometimes
+		#Apparently that's "because of the Reloader"
 		#TODO: remove this very risky, confusing workaround
-		dbInit.code = (lambda:None).func_code
+		#dbInit.code = (lambda:None).code
 #close db
 def dbExit(pause = False):
 	if pause:
@@ -282,10 +283,20 @@ def getTime():
 	return(timeStr)
 #checks if user can login
 def checkUserLogin(usernameInput, passwordInput):
+	print("checkUserLogin:", usernameInput, passwordInput, flush=True)
 	userToCheck = Userdata.query.filter_by(username=usernameInput).first()
-	if userToCheck and passwordCheck(userToCheck.password, passwordInput):
+
+	print("checkUserLogin query:", userToCheck,flush=True)
+
+	passCheckResult = passwordCheck(userToCheck.password, passwordInput)
+	if userToCheck and passCheckResult:
 		return(True, userToCheck)
 	else:
+		#TODO: it is insecure to tell the user if it's username wrong or password wrong
+		if not userToCheck:
+			print("user not found?",flush=True)
+		if not passCheckResult:
+			print("Wrong password!",flush=True)
 		return(False, userToCheck)
 #copy files
 def copy(src, dst):
@@ -354,4 +365,6 @@ def initGMSetup(pwLen = 12):
 	#add gm to db from MeetingMayhem.DB_MM import addUserDB, updateGMRole
 #check password for login
 def passwordCheck(hashToCompare, passwordToCheck):
+	#TODO: password for Alice is 'a', password given is 'a', but they don't match.
+	print("passwordCheck",hashToCompare,passwordToCheck,passwordHashGen(passwordToCheck),flush=True)
 	return(bcrypt.check_password_hash(hashToCompare, passwordToCheck))

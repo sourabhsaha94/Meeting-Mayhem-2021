@@ -4,9 +4,10 @@ from flask import Flask
 from flask import render_template, url_for, flash, redirect, request, session
 from requests.models import Response
 from venv import DB_MM
+from venv import app
 
-
-app = Flask(__name__)
+#Removed for causing problems. Is already in __init__.py
+#app = Flask(__name__)
 
 @app.route('/time')
 def get_current_time():
@@ -20,14 +21,26 @@ def get_current():
 	pwd = loginInfo['password']
 
 	loginExists = True
-	#loginExists = DB_MM.checkUserLogin(user, pwd)
+	loginExists = DB_MM.checkUserLogin(user, pwd)
 	print("  testing login:",loginExists)
+
 
 	responseObject = {}
 	responseObject['URI'] = '1234';
 
 	print("",flush=True)
-	return responseObject, 200
+	retcode = 200
+	if not loginExists[0]:
+		retcode = 406 #TODO: right code
+
+	retcode = 200 #Force it to work regardless of if password is bad.
+	#TODO: checkUserLogin is doing a different hash for writing the password vs checking the password
+
+	if loginExists[1] is None:
+		print("get_current says wrong username",user,flush=True)
+		retcode = 407
+
+	return responseObject, retcode
 
 @app.route('/sendmessage',methods=["POST"])
 def send_message():
