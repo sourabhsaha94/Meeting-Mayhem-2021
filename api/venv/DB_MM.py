@@ -17,14 +17,14 @@ import string
 
 #TODO: Remove this, it's only for testing one error.
 from flask_sqlalchemy import SQLAlchemy #this is for managing databases
-from sqlalchemy import exc
+from sqlalchemy import exc, func
 
 #constants
 #all letters and numbers for random PW generation
 CHARLIST = string.ascii_letters + string.digits
 #global vars
 #TODO: dynamically update messageIDCount based on the database's state
-messageIDCount = 7 #this isitterated as time goes on, might move
+messageIDCount = 0 #this isitterated as time goes on, might move
 messageIDList = [] #this holds all message id's for checking
 #this is the location for the flask app, can be automated later
 workingFolder = "/" #TODO: Figure this out
@@ -252,10 +252,18 @@ def dbInit():
 			addUserDB("GM", encryptedPassword, "GM", "Spectator")
 		except: #TODO: You can do this but you shouldn't
 			print("Whoops! We've already added GM!",flush=True)
-			db.session.rollback()
+			db.session.rollback() #fail gracefully, reset the cursor to prior state to "clear" the bad addition.
 			#return False
+		#print("passed the add GM line",flush=True)
 
-		print("passed the add GM line",flush=True)
+		#make messageIDCount reflect the next message ID to be given
+		#check database for existing messages, get max.
+		global messageIDCount
+		messageIDCount = db.session.query(func.max(UserSentMessages.message_id)).scalar()
+
+		print("  max ID",messageIDCount,flush=True)
+		#print("past max ID",flush=True)
+
 
 		with open("loginDefault.txt", "r") as loginFile:
 			lines = list(loginFile)
