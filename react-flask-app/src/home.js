@@ -185,7 +185,7 @@ export default function Home(props) {
                             </Dropdown>
                         </div>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <div class="col-xs-6">
+                        {/* <div class="col-xs-6">
                             <Dropdown>
                                 <Dropdown.Toggle variant="secondary" id="dropdown-basic">
                                     Time
@@ -195,8 +195,8 @@ export default function Home(props) {
                                     
                                 </Dropdown.Menu>
                             </Dropdown>
-                        </div>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </div> */}
+                        {/* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <div class="col-xs-6">
                             <Dropdown>
                                 <Dropdown.Toggle variant="secondary" id="dropdown-basic">
@@ -219,7 +219,7 @@ export default function Home(props) {
                                     
                                 </Dropdown.Menu>
                             </Dropdown>
-                        </div>
+                        </div> */}
                         
                     </div>
                     &nbsp;&nbsp;

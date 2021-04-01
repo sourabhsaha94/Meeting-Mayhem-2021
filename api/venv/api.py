@@ -14,7 +14,7 @@ def get_current_time():
 	return {'time': time.time()}
 
 @app.route('/login',methods=["POST"])
-def get_current():
+def login():
 	print("inside login")
 	loginInfo = json.loads(request.data)
 	user = loginInfo['email']
