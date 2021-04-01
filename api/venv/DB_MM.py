@@ -45,27 +45,32 @@ class Userdata(db.Model, UserMixin):
 	id = db.Column(db.Integer, primary_key=True) #this is the id for the DB entry
 	username = db.Column(db.String(20), unique=True, nullable=False)
 	password = db.Column(db.String(60), nullable=False)
-	role1 = db.Column(db.String(20), nullable=False) #this is the users role
-	role2 = db.Column(db.String(20)) #if the user is GM, the second role tells their main role
+	#role1 = db.Column(db.String(20), nullable=False) #this is the users role
+	#role2 = db.Column(db.String(20)) #if the user is GM, the second role tells their main role
 	#this binds the user to their messages
-	sent_messages = db.relationship('UserSentMessages', backref = "username", lazy=True)
+	#sent_messages = db.relationship('Messages', backref = "username", lazy=True)
 
 #user messages
-class UserSentMessages(db.Model):
+class Messages(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	sender = db.Column(db.String(20), nullable=False)
 	recipient = db.Column(db.String(20), nullable=False)
-	time_choice = db.Column(db.String(4), nullable=False)
-	place_choice = db.Column(db.String(20), nullable=False)
-	key_choice = db.Column(db.String(20), nullable=False)
+	#time_choice = db.Column(db.String(4), nullable=False)
+	#place_choice = db.Column(db.String(20), nullable=False)
+	#key_choice = db.Column(db.String(20), nullable=False)
 	message = db.Column(db.String(40), nullable=False)
-	encrypt_check = db.Column(db.Boolean, nullable=False)
+	#encrypt_check = db.Column(db.Boolean, nullable=False)
 	message_id =  db.Column(db.Integer, unique=True, nullable=False)
 	#this is from
 	user_id = db.Column(db.Integer, db.ForeignKey('userdata.id'), nullable=False)
 	#this is the same as sender unless modefied by the adversary
 	originalSender = db.Column(db.String(20), nullable=False)
-	round_number = db.Column(db.Integer, nullable=False)
+	#round_number = db.Column(db.Integer, nullable=False)
+
+class Games(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	sender = db.Column(db.String(20), nullable=False)
+	recipient = db.Column(db.String(20), nullable=False)
 
 def sendMessage(sender,receiver,text):
 
@@ -106,9 +111,16 @@ def addMessageToDB(submitedMessage, userID, messageIsModded = False, oMessage = 
 
 		print("addMessage submittedMessage",submitedMessage,flush=True)
 	#ready data for db input
-	message = UserSentMessages(sender=submitedMessage["Sender"], recipient=submitedMessage["Recipient"], time_choice=submitedMessage["Time"],
-		place_choice=submitedMessage["Place"], key_choice=submitedMessage["Key"], message=submitedMessage["Message"],
-		encrypt_check=submitedMessage["Encrypt"], message_id=messageID, originalSender = originalSender, round_number=submitedMessage["Round"],
+	message = Messages(sender=submitedMessage["Sender"],
+		recipient=submitedMessage["Recipient"],
+		#time_choice=submitedMessage["Time"],
+		#place_choice=submitedMessage["Place"],
+		#key_choice=submitedMessage["Key"],
+		message=submitedMessage["Message"],
+		#encrypt_check=submitedMessage["Encrypt"],
+		message_id=messageID,
+		originalSender = originalSender,
+		#round_number=submitedMessage["Round"],
 		user_id = userID)
 	#submit db
 	db.session.add(message)
@@ -117,8 +129,8 @@ def addMessageToDB(submitedMessage, userID, messageIsModded = False, oMessage = 
 
 #pull messages from db
 def getUserMessageFromDB(usernameInput, gameRound = -1):
-	#get all messages from UserSentMessages where recipient is our user
-	messageList = UserSentMessages.query.filter_by(recipient=usernameInput).all()
+	#get all messages from Messages where recipient is our user
+	messageList = Messages.query.filter_by(recipient=usernameInput).all()
 
 	print("getUserMessageFromDB",messageList,flush=True)
 	formattedMessageList = []
@@ -135,9 +147,16 @@ def getUserMessageFromDB(usernameInput, gameRound = -1):
 	return(formattedMessageList)
 # takes message from db, and outputs it as dict
 def formatMessagesFromDB(messageInput):
-	messageDict = {"Round":messageInput.round_number, "Sender":messageInput.sender, "Recipient":messageInput.recipient, "Time":messageInput.time_choice,
-				"Place":messageInput.place_choice, "Key":messageInput.key_choice, "Encrypt":messageInput.encrypt_check, "Message":messageInput.message,
-				"MessageID":messageInput.message_id, "OriginalSender":messageInput.originalSender}
+	messageDict = {"Round":messageInput.round_number,
+				"Sender":messageInput.sender,
+				"Recipient":messageInput.recipient,
+				#"Time":messageInput.time_choice,
+				#"Place":messageInput.place_choice,
+				#"Key":messageInput.key_choice,
+				#"Encrypt":messageInput.encrypt_check,
+				"Message":messageInput.message,
+				"MessageID":messageInput.message_id,
+				"OriginalSender":messageInput.originalSender}
 
 	#Formating-> round (integer), sender (string), recipient (string), time_choice (int), place
 	#			 (string), key (string), encrypt (boolean), message (string), message ID (int), original sender (string)
@@ -259,7 +278,7 @@ def dbInit():
 		#make messageIDCount reflect the next message ID to be given
 		#check database for existing messages, get max.
 		global messageIDCount
-		messageIDCount = db.session.query(func.max(UserSentMessages.message_id)).scalar()
+		messageIDCount = db.session.query(func.max(Messages.message_id)).scalar()
 
 		print("  max ID",messageIDCount,flush=True)
 		#print("past max ID",flush=True)
@@ -336,7 +355,7 @@ def copy(src, dst):
 def deleteFile(fileName):
 	fileName = workingFolder + fileName
 	subprocess.call(["rm", str(fileName)])
-#generate users
+#generate default users
 def userGen(GMisAdversary = True, users = ["Alice", "Bob", "Charlie", "Dan", "Eve"], numSpectator = 1, pwLen = 12):
 	#update GM
 	#if if gm is not adversary, create network user, and decrement spectators
