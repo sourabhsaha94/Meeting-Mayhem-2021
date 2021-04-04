@@ -63,9 +63,9 @@ export default function Main(props) {
                                     <Nav.Link onClick={receivedMessagesClicked}>Received Messages</Nav.Link>
                                 </Nav>
                                 <Nav>
-                                    <Nav class="navbar-brand pull-right">Hi {props.location.state.uname} !</Nav></Nav>
+                                    <Nav className="navbar-brand pull-right">Hi {props.location.state.uname} !</Nav></Nav>
                                 <Nav>
-                                    <Nav.Link class="navbar-brand pull-right" href="/">Logout</Nav.Link></Nav>
+                                    <Nav.Link className="navbar-brand pull-right" href="/">Logout</Nav.Link></Nav>
                             </Navbar.Collapse>
                         </Navbar> 
 

@@ -156,12 +156,12 @@ export default function Home(props) {
 
     return(
         <div>
-            <div class="p-5 ml-lg-3" align="left">
-                    <div class="left marginborder shadow-lg p-3 mb-5 bg-white rounded"><b><h4>Send Message</h4></b>
-                    <div class="row" style={{ 'padding-left': 17, 'padding-top':10}}>
+            <div className="p-5 ml-lg-3" align="left">
+                    <div className="left marginborder shadow-lg p-3 mb-5 bg-white rounded"><b><h4>Send Message</h4></b>
+                    <div className="row" style={{ 'paddingLeft': 17, 'paddingTop':10}}>
                     
   
-                        <div class="col-xs-6">
+                        <div className="col-xs-6">
                             <Dropdown >
                                 <Dropdown.Toggle variant="secondary" id="dropdown-basic">
                                     Sender
@@ -173,7 +173,7 @@ export default function Home(props) {
                             </Dropdown>
                         </div>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <div class="col-xs-6">
+                        <div className="col-xs-6">
                             <Dropdown onClick={handleReceiversDropdownClicked}>
                                 <Dropdown.Toggle variant="secondary" id="dropdown-basic">
                                     Recipient
@@ -185,7 +185,7 @@ export default function Home(props) {
                             </Dropdown>
                         </div>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <div class="col-xs-6">
+                        {/* <div className="col-xs-6">
                             <Dropdown>
                                 <Dropdown.Toggle variant="secondary" id="dropdown-basic">
                                     Time
@@ -195,9 +195,9 @@ export default function Home(props) {
                                     
                                 </Dropdown.Menu>
                             </Dropdown>
-                        </div>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <div class="col-xs-6">
+                        </div> */}
+                        {/* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <div className="col-xs-6">
                             <Dropdown>
                                 <Dropdown.Toggle variant="secondary" id="dropdown-basic">
                                     Place
@@ -209,7 +209,7 @@ export default function Home(props) {
                             </Dropdown>
                         </div>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <div class="col-xs-6">
+                        <div className="col-xs-6">
                             <Dropdown>
                                 <Dropdown.Toggle variant="secondary" id="dropdown-basic">
                                     Key
@@ -219,15 +219,15 @@ export default function Home(props) {
                                     
                                 </Dropdown.Menu>
                             </Dropdown>
-                        </div>
+                        </div> */}
                         
                     </div>
                     &nbsp;&nbsp;
                     
                     
 
-                    <div class="form-group" style={{ 'padding-bottom': 10}}>
-                        <input type="text" class="form-control" id="usr" placeholder="Enter the message..." onChange={handleMessageChange}/>
+                    <div className="form-group" style={{ 'paddingBottom': 10}}>
+                        <input type="text" className="form-control" id="usr" placeholder="Enter the message..." onChange={handleMessageChange}/>
                     </div>
                         
                     
