@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Redirect } from 'react-router-dom'
 
 export default function Login() {
-
         const [uid, setUID] = useState('');
         const [userName, setUserName] = useState('');
         const [password, setPassword] = useState('');
@@ -12,9 +11,7 @@ export default function Login() {
     }
 
     function onSubmit(e) {
-
         e.preventDefault();
-        
         const requestOptions = {
             method: 'POST',
             headers: { 'Access-Control-Request-Method': 'POST'
@@ -37,6 +34,9 @@ export default function Login() {
         })
         .then(data => {
 
+            console.log("HII")
+            console.log(data)
+            console.log("hello")
             // if (data.statusCode != 200) {
             //     // get error message from body or default to response statusText
             //     console.log("returning");
@@ -47,7 +47,7 @@ export default function Login() {
             // console.log(parsedData);
             if(data.URI!='')
             {
-                
+                console.log("HIIII");
                 setUID(data.URI);
             }
             else
@@ -57,7 +57,7 @@ export default function Login() {
         })
         .catch(error => {
             console.error('There was an error!', error);
-            alert("There was an error, please try again!")
+            alert(error)
         });
     
     }
@@ -77,11 +77,11 @@ export default function Login() {
     }
     return (
         
-        <div class="row" style={{paddingTop:100}}>
-            <div class="col-md-4"></div>
-            <div class="col-md-4">
-            <div class="col-md-1"></div>
-                <div class="col-md-8">
+        <div className="row" style={{paddingTop:100}}>
+            <div className="col-md-4"></div>
+            <div className="col-md-4">
+            <div className="col-md-1"></div>
+                <div className="col-md-8">
             
             <form>
             <h3>Sign In</h3>
@@ -94,7 +94,7 @@ export default function Login() {
                 <input type="password" className="form-control" placeholder="Enter password*" onChange={handlePasswordChange}/>
             </div>
 
-            <div class="row">
+            <div className="row">
                 
             </div>
 
@@ -105,7 +105,7 @@ export default function Login() {
         </form>
         </div>
         
-        </div><div class="col-md-4"></div>
+        </div><div className="col-md-4"></div>
         </div>
     );
 }
