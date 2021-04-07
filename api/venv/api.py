@@ -89,7 +89,7 @@ def get_messages():
 
 	responseObject = {}
 	responseObject['messages'] = msgs
-	
+
 	return responseObject, 200
 
 @app.route('/getrecipients',methods=["GET"])
@@ -97,5 +97,6 @@ def get_recipients():
 
 
 	responseObject = {}
+	#TODO: replace with Game.players but minus active user
 	responseObject['recipients'] = [{'id':2, 'name':'Akriti'},{'id':3, 'name':'Ryan'},{'id':4, 'name':'Julie'}]
 	return responseObject, 200
