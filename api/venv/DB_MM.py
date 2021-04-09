@@ -278,7 +278,14 @@ def dbInit():
 		#make messageIDCount reflect the next message ID to be given
 		#check database for existing messages, get max.
 		global messageIDCount
-		messageIDCount = db.session.query(func.max(Messages.message_id)).scalar()
+		try:
+			messageIDCount = db.session.query(func.max(UserSentMessages.message_id)).scalar()
+			if not messageIDCount:
+				#if it's NoneType? ? ?
+				messageIDCount = 0
+		except:
+			print("Querying MessageIDCount failed. Setting it to 0...",flush=True)
+			messageIDCount = 0
 
 		print("  max ID",messageIDCount,flush=True)
 		#print("past max ID",flush=True)
