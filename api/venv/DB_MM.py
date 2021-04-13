@@ -45,8 +45,7 @@ class Userdata(db.Model, UserMixin):
 	id = db.Column(db.Integer, primary_key=True) #this is the id for the DB entry
 	username = db.Column(db.String(20), unique=True, nullable=False)
 	password = db.Column(db.String(60), nullable=False)
-	role1 = db.Column(db.String(20), nullable=False) #this is the users role
-	role2 = db.Column(db.String(20)) #if the user is GM, the second role tells their main role
+
 	#this binds the user to their messages
 	sent_messages = db.relationship('UserSentMessages', backref = "username", lazy=True)
 
@@ -198,10 +197,10 @@ def messageSplit(messages):
 
 	return(Round, Sender, Recipient, Time, Place, Key, Encrypt, MessageText, MessageID, OriginalSender)
 #adds user to db
-def addUserDB(usernameInput, passwordInput, role1Input, role2Input = "", autoRollback = True):
+def addUserDB(usernameInput, passwordInput, role1Input="", role2Input = "", autoRollback = True):
 
 	try:
-		user = Userdata(username = usernameInput, password = passwordInput, role1 = role1Input, role2 = role2Input)
+		user = Userdata(username = usernameInput, password = passwordInput)
 		#submit db
 		db.session.add(user)
 		#commit db
