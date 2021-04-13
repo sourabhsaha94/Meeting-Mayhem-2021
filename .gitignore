@@ -9,3 +9,5 @@ api/venv/__pycache__/*
 react-flask-app/package-lock.json
 api/venv/*.db
 api/venv/login.txt
+
+api/venv/lib/*
