@@ -89,7 +89,22 @@ def get_messages():
 
 	responseObject = {}
 	responseObject['messages'] = msgs
-	
+
+	return responseObject, 200
+
+@app.route('/getsentmessages',methods=["GET"])
+def get_sent_messages():
+	username = request.args.get('user', default = 'Alice', type = str)
+	print("inside get sent message")
+	print("  so:",username,flush=True)
+
+	msgs = DB_MM.getUserSentMessageFromDB(username)
+
+	print("  msgs:", msgs, flush=True)
+
+	responseObject = {}
+	responseObject['messages'] = msgs
+
 	return responseObject, 200
 
 @app.route('/getrecipients',methods=["GET"])

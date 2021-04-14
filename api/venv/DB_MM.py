@@ -33,7 +33,7 @@ workingFolder = "/" #TODO: Figure this out
 #need for login, loads user
 @loginManager.user_loader
 def load_user(user_id):
-	return Userdata.query.get(int(user_id))
+	return User.query.get(int(user_id))
 """
 #DB thigs
 
@@ -41,7 +41,7 @@ each database object is a class the db.Model is needed for this
 UserMixin is used to manage some functionality for login stuff
 """
 #user data such as login stuff
-class Userdata(db.Model, UserMixin):
+class User(db.Model, UserMixin):
 	id = db.Column(db.Integer, primary_key=True) #this is the id for the DB entry
 	username = db.Column(db.String(20), unique=True, nullable=False)
 	password = db.Column(db.String(60), nullable=False)
@@ -60,11 +60,25 @@ class UserSentMessages(db.Model):
 	message = db.Column(db.String(40), nullable=False)
 	encrypt_check = db.Column(db.Boolean, nullable=False)
 	message_id =  db.Column(db.Integer, unique=True, nullable=False)
-	#this is from
-	user_id = db.Column(db.Integer, db.ForeignKey('userdata.id'), nullable=False)
-	#this is the same as sender unless modefied by the adversary
-	originalSender = db.Column(db.String(20), nullable=False)
+	outgoing = db.Column(db.Boolean, nullable=False) #TODO: For Adversary message passing
+
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 	round_number = db.Column(db.Integer, nullable=False)
+
+#user messages
+class Game(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	round = db.Column(db.Integer, nullable=False)
+
+#https://stackoverflow.com/questions/40104502/how-to-create-a-field-with-a-list-of-foreign-keys-in-sqlalchemy
+#TODO: db.Model vs Base???
+#class UserGame(db.Model):
+#class Bababoey(db.Model):
+#	id = db.Column(db.Integer, primary_key=True)
+	#user_id = Column(UUID(as_uuid=True), ForeignKey('user.id'))
+	#game_id = Column(UUID(as_uuid=True), ForeignKey('game.id'))
+#	#__tablename__ = 'user_games' #TODO: ???
+
 
 def sendMessage(sender,receiver,text):
 
@@ -118,7 +132,15 @@ def addMessageToDB(submitedMessage, userID, messageIsModded = False, oMessage = 
 def getUserMessageFromDB(usernameInput, gameRound = -1):
 	#get all messages from UserSentMessages where recipient is our user
 	messageList = UserSentMessages.query.filter_by(recipient=usernameInput).all()
+	return ParseMessageFromDB(messageList, gameRound)
 
+def getUserSentMessageFromDB(usernameInput, gameRound = -1):
+	#get all messages from UserSentMessages where recipient is our user
+	messageList = UserSentMessages.query.filter_by(sender=usernameInput).all()
+	return ParseMessageFromDB(messageList, gameRound)
+
+#
+def ParseMessageFromDB(messageList, gameRound):
 	print("getUserMessageFromDB",messageList,flush=True)
 	formattedMessageList = []
 	#TODO: format game round in the SQL query instead?
@@ -132,6 +154,7 @@ def getUserMessageFromDB(usernameInput, gameRound = -1):
 			if message.round_number == gameround:
 				formattedMessageList.append(formatMessagesFromDB(message))
 	return(formattedMessageList)
+
 # takes message from db, and outputs it as dict
 def formatMessagesFromDB(messageInput):
 	messageDict = {"Round":messageInput.round_number, "Sender":messageInput.sender, "Recipient":messageInput.recipient, "Time":messageInput.time_choice,
@@ -200,7 +223,7 @@ def messageSplit(messages):
 def addUserDB(usernameInput, passwordInput, role1Input="", role2Input = "", autoRollback = True):
 
 	try:
-		user = Userdata(username = usernameInput, password = passwordInput)
+		user = User(username = usernameInput, password = passwordInput)
 		#submit db
 		db.session.add(user)
 		#commit db
@@ -211,7 +234,7 @@ def addUserDB(usernameInput, passwordInput, role1Input="", role2Input = "", auto
 
 #updates gm role after setup
 def updateGMRole(newRole):
-	gm = Userdata.query.filter_by(username="GM").first()
+	gm = User.query.filter_by(username="GM").first()
 	gm.role2 = newRole
 #setup db
 def dbInit():
@@ -312,7 +335,7 @@ def getTime():
 #checks if user can login
 def checkUserLogin(usernameInput, passwordInput):
 	print("checkUserLogin:", usernameInput, passwordInput, flush=True)
-	userToCheck = Userdata.query.filter_by(username=usernameInput).first()
+	userToCheck = User.query.filter_by(username=usernameInput).first()
 
 	print("checkUserLogin query:", userToCheck,flush=True)
 
