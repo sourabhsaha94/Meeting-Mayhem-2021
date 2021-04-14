@@ -71,13 +71,11 @@ class Game(db.Model):
 	round = db.Column(db.Integer, nullable=False)
 
 #https://stackoverflow.com/questions/40104502/how-to-create-a-field-with-a-list-of-foreign-keys-in-sqlalchemy
-#TODO: db.Model vs Base???
-#class UserGame(db.Model):
-#class Bababoey(db.Model):
-#	id = db.Column(db.Integer, primary_key=True)
-	#user_id = Column(UUID(as_uuid=True), ForeignKey('user.id'))
-	#game_id = Column(UUID(as_uuid=True), ForeignKey('game.id'))
-#	#__tablename__ = 'user_games' #TODO: ???
+class UserGame(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+	game_id = db.Column(db.Integer, db.ForeignKey('game.id'))
+	#TODO: the example used UUID instead of Integer. Should we care?
 
 
 def sendMessage(sender,receiver,text):
