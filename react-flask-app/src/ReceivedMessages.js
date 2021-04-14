@@ -7,29 +7,27 @@ export default function ReceivedMessages() {
 
 
     const columns = [{
-        dataField: 'id',
-        text: 'Product ID'
+        dataField: 'sender',
+        text: 'Sender'
       }, {
-        dataField: 'name',
-        text: 'Product Name'
-      }, {
-        dataField: 'price',
-        text: 'Product Price'
+        dataField: 'message',
+        text: 'Message'
       }];
 
       var products = [{
-        id: 1,
-        name: "Product1",
-        price: 120
+        sender: "Sudha",
+        message: "Hi Akriti"
     }, {
-        id: 2,
-        name: "Product2",
-        price: 80
+      sender: "Ryan",
+      message: "Hey There!"
     }];
 
 
     return(
+      <>
+      <div>Received Messages</div>
         <BootstrapTable keyField='id' data={ products } columns={ columns } />
+        </>
     ); 
 }
 
