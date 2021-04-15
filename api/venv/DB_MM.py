@@ -75,6 +75,7 @@ class UserGame(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 	game_id = db.Column(db.Integer, db.ForeignKey('game.id'))
+	role = db.Column(db.String(20), nullable=True) #TODO: Role table. Role stuff.
 	#TODO: the example used UUID instead of Integer. Should we care?
 
 
@@ -229,6 +230,35 @@ def addUserDB(usernameInput, passwordInput, role1Input="", role2Input = "", auto
 	except exc.IntegrityError:
 		if autoRollback:
 			db.session.rollback()
+
+def addUserToGameDB(userid, gameid):
+	try:
+		ug = UserGame(user_id = userid, game_id = gameid)
+		#submit db
+		db.session.add(ug)
+		#commit db
+		db.session.commit()
+	except exc.IntegrityError:
+		if autoRollback:
+			db.session.rollback()
+
+#userList is empty, just initial doing.
+def addGameDB(gameid, userList = [], autoRollback=True):
+	try:
+		game = Game(id=gameid,round = 0)
+		db.session.add(game)
+		db.session.commit()
+	except exc.IntegrityError:
+		if autoRollback:
+			db.session.rollback()
+
+
+def getUsersInGame(gameid, autoRollback=True):
+	users = UserGame.query.filter_by(game_id=gameid).all()
+	print("getUsersInGame", gameid, "gets:",users, flush=True)
+
+	return users
+	#return ParseMessageFromDB(messageList, gameRound)
 
 #updates gm role after setup
 def updateGMRole(newRole):

@@ -9,6 +9,28 @@ from venv import app
 #Removed for causing problems. Is already in __init__.py
 #app = Flask(__name__)
 
+@app.route('/test',methods=["GET"])
+def test():
+	username = request.args.get('user', default = 'Alice', type = str)
+	print("inside get message")
+	#messageInfo = json.loads(request.data)
+	#sender = messageInfo['sender']
+	#receiver = messageInfo['receiver']
+	#message = messageInfo['message']
+
+	print("  so:",username,flush=True)
+
+	msgs = DB_MM.getUserMessageFromDB(username)
+	msgs += DB_mm.getUserSentMessageFromDB(username)
+
+	print("  msgs:", msgs, flush=True)
+
+	responseObject = {}
+	responseObject['messages'] = msgs
+
+	return responseObject, 200
+
+
 @app.route('/time')
 def get_current_time():
 	return {'time': time.time()}
@@ -109,8 +131,9 @@ def get_sent_messages():
 
 @app.route('/getrecipients',methods=["GET"])
 def get_recipients():
+	game = request.args.get('gameID', default = '-1', type = int)
 
-
+	DB_MM.getUsersInGame(3)
 	responseObject = {}
 	responseObject['recipients'] = [{'id':2, 'name':'Akriti'},{'id':3, 'name':'Ryan'},{'id':4, 'name':'Julie'}]
 	return responseObject, 200
