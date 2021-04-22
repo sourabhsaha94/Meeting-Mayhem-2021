@@ -8,7 +8,7 @@ from venv import app
 
 #Removed for causing problems. Is already in __init__.py
 #app = Flask(__name__)
-
+#added a commit
 @app.route('/time')
 def get_current_time():
 	return {'time': time.time()}
