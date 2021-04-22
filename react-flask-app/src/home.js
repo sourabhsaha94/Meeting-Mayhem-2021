@@ -34,15 +34,14 @@ export default function Home(props) {
             headers: { 'Access-Control-Request-Method': 'POST'
             , 'Access-Control-Request-Headers': '*'},
             body: JSON.stringify({ 
-                'sender': sender,
+                'sender': sender.name,
                 'receiver': receiver,
                 'message': message
               })
         };
 
-        fetch('/sendmessage', requestOptions)
+        fetch('https://3qtp6ozrn9.execute-api.us-east-2.amazonaws.com/default/sendMessage', requestOptions)
         .then(response => {
-            
             if (!response.ok) {
                 
                 const error = "There was some problem in the request. Please try again."
@@ -53,15 +52,6 @@ export default function Home(props) {
         .then(data => {
 
             console.log(data)
-            // if (data.statusCode != 200) {
-            //     // get error message from body or default to response statusText
-            //     console.log("returning");
-            //     const error = (JSON.parse(data.body)).message
-            //     return Promise.reject(error);
-            // }
-            // const parsedData = (JSON.parse(data))
-            // console.log(parsedData);
-
             console.log(data.messageID)
 
             
@@ -102,7 +92,7 @@ export default function Home(props) {
             , 'Access-Control-Request-Headers': '*'}
         };
 
-        fetch('/getrecipients', requestOptions)
+        fetch('https://0zteh29zqg.execute-api.us-east-2.amazonaws.com/default/getRecipients', requestOptions)
         .then(response => {
             // check for error response
             if (!response.ok) {
@@ -113,20 +103,13 @@ export default function Home(props) {
             return response.json()
         })
         .then(data => {
-
-            console.log(data)
-            // if (data.statusCode != 200) {
-            //     // get error message from body or default to response statusText
-            //     console.log("returning");
-            //     const error = (JSON.parse(data.body)).message
-            //     return Promise.reject(error);
-            // }
-            // const parsedData = (JSON.parse(data))
-            // console.log(parsedData);
-
-            setReceiverList(data.recipients)
-
-            
+            if (data.body!==undefined) {
+                let recipients = JSON.parse(data.body);
+                setReceiverList(recipients);
+            }
+            else {
+                throw "Could not retrieve recipient list";
+            }
         })
         .catch(error => {
             console.error('There was an error!', error);
@@ -136,12 +119,11 @@ export default function Home(props) {
     }
 
     const  recipients  = receiverList;
-    console.log(recipients)
 
     let recipientsList = recipients.length > 0
     	&& recipients.map((item, i) => {
       return (
-        <Dropdown.Item key={i} value={item.id} onClick={handleReceivers}>{item.name}</Dropdown.Item>
+        <Dropdown.Item key={i} value={item.emailAddress} onClick={handleReceivers}>{item.displayName}</Dropdown.Item>
       )
     }, this);
 
@@ -183,6 +165,14 @@ export default function Home(props) {
                                     {recipientsList}
                                 </Dropdown.Menu>
                             </Dropdown>
+                        </div>
+                        <div className="col-xs-6">
+                            <div className = "col-xs-6">
+                                Send Message To : 
+                            </div>
+                            <div className = "col-xs-6">
+                                {receiver}
+                            </div>
                         </div>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         {/* <div className="col-xs-6">

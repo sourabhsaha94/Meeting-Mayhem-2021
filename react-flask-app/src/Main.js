@@ -14,6 +14,8 @@ export default function Main(props) {
     const [showReceivedMessagesScreen, setShowReceivedMessagesScreen] = useState(false); 
     const [uid, setUID] = useState('');
 
+    console.log(props)
+
     useEffect(() => {
         
         setUID(props.location.state.uid)

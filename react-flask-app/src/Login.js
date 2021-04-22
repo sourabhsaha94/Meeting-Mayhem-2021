@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Redirect } from 'react-router-dom'
 
 export default function Login() {
-        const [uid, setUID] = useState('');
+        const [emailAddress, setEmailAddress] = useState('');
         const [userName, setUserName] = useState('');
         const [password, setPassword] = useState('');
       
@@ -22,8 +22,9 @@ export default function Login() {
               })
         };
 
-        fetch('/login', requestOptions)
+        fetch('https://2nahcals15.execute-api.us-east-2.amazonaws.com/default/login', requestOptions)
         .then(response => {
+
             // check for error response
             if (!response.ok) {
                 // get error message from body or default to response statusText
@@ -34,25 +35,14 @@ export default function Login() {
         })
         .then(data => {
 
-            console.log("HII")
-            console.log(data)
-            console.log("hello")
-            // if (data.statusCode != 200) {
-            //     // get error message from body or default to response statusText
-            //     console.log("returning");
-            //     const error = (JSON.parse(data.body)).message
-            //     return Promise.reject(error);
-            // }
-            // const parsedData = (JSON.parse(data))
-            // console.log(parsedData);
-            if(data.URI!='')
+            if(data.body!==undefined)
             {
-                console.log("HIIII");
-                setUID(data.URI);
+                var body = JSON.parse(data.body);
+                setEmailAddress(body.emailAddress);
             }
             else
             {
-                console.log("NOOO");
+               throw "Login failed";
             }
         })
         .catch(error => {
@@ -70,9 +60,9 @@ export default function Login() {
         setPassword(e.target.value);
     }
     
-    if (uid!='') {
+    if (emailAddress!=="") {
         return (
-            <Redirect to={{pathname: "/home", state: { uname: userName, uid: uid}} }/>
+            <Redirect to={{pathname: "/home", state: { uname: userName, uid: emailAddress}} }/>
         )     
     }
     return (
