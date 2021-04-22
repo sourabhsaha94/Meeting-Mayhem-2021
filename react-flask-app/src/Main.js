@@ -70,7 +70,7 @@ export default function Main(props) {
                         </Navbar> 
 
                     {showSentMessagesScreen && <SentMessages/>}
-                    {showReceivedMessagesScreen && <ReceivedMessages/>}
+                    {showReceivedMessagesScreen && <ReceivedMessages uid={uid} uname={props.location.state.uname}/>}
                     {showHomeScreen && <Home uid={uid} uname={props.location.state.uname}/>}
 
                 </div>

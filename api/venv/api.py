@@ -72,10 +72,11 @@ def send_message():
 
 	return responseObject, 200
 
-@app.route('/getmessages',methods=["GET"])
+@app.route('/getmessages',methods=["POST"])
 def get_messages():
 	username = request.args.get('user', default = 'Alice', type = str)
 	print("inside get message")
+	print(username)
 	#messageInfo = json.loads(request.data)
 	#sender = messageInfo['sender']
 	#receiver = messageInfo['receiver']
@@ -83,18 +84,24 @@ def get_messages():
 
 	print("  so:",username,flush=True)
 
-	msgs = DB_MM.getUserMessageFromDB(username)
+	#msgs = DB_MM.getUserMessageFromDB(username)
 
-	print("  msgs:", msgs, flush=True)
+	#print("  msgs:", msgs, flush=True)
 
 	responseObject = {}
+	msgs = [{
+        'sender': "Sudha",
+        'message': "Hi Akriti let's meet in the Library at 4 pm"
+    }, {
+      'sender': "Ryan",
+      'message': "Hey There!"
+    }]
 	responseObject['messages'] = msgs
 	
 	return responseObject, 200
 
 @app.route('/getrecipients',methods=["GET"])
 def get_recipients():
-
 
 	responseObject = {}
 	responseObject['recipients'] = [{'id':2, 'name':'Akriti'},{'id':3, 'name':'Ryan'},{'id':4, 'name':'Julie'}]
