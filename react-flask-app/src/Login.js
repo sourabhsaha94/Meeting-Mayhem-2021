@@ -5,9 +5,10 @@ export default function Login() {
         const [emailAddress, setEmailAddress] = useState('');
         const [userName, setUserName] = useState('');
         const [password, setPassword] = useState('');
+        const [successfullLogin, setSuccessfullLogin] = useState(false);
       
     function validateForm() {
-        return userName.length > 0 && password.length > 0;
+        return emailAddress.length > 0 && password.length > 0;
     }
 
     function onSubmit(e) {
@@ -17,7 +18,7 @@ export default function Login() {
             headers: { 'Access-Control-Request-Method': 'POST'
             , 'Access-Control-Request-Headers': '*'},
             body: JSON.stringify({ 
-                'email': userName,
+                'email': emailAddress,
                 'password': password
               })
         };
@@ -39,6 +40,9 @@ export default function Login() {
             {
                 var body = JSON.parse(data.body);
                 setEmailAddress(body.emailAddress);
+                setUserName(body.displayName);
+                setSuccessfullLogin(true);
+                  
             }
             else
             {
@@ -46,25 +50,23 @@ export default function Login() {
             }
         })
         .catch(error => {
-            console.error('There was an error!', error);
+            console.error('Login failed');
             alert(error)
         });
     
     }
 
-    function handleuserNameChange(e) {
-            setUserName(e.target.value);           
+    function handleEmailAddressChange(e) {
+        setEmailAddress(e.target.value);           
     }
 
     function handlePasswordChange(e) {
         setPassword(e.target.value);
     }
-    
-    if (emailAddress!=="") {
+    if(successfullLogin)
         return (
-            <Redirect to={{pathname: "/home", state: { uname: userName, uid: emailAddress}} }/>
-        )     
-    }
+            <Redirect to={{pathname: "/home", state: { userName: userName, emailAddress: emailAddress}} }/>
+        );   
     return (
         
         <div className="row" style={{paddingTop:100}}>
@@ -77,7 +79,7 @@ export default function Login() {
             <h3>Sign In</h3>
 
             <div className="form-group">
-                <input type="text" className="form-control" placeholder="Enter email*" onChange={handleuserNameChange} />
+                <input type="text" className="form-control" placeholder="Enter email*" onChange={handleEmailAddressChange} />
             </div>
 
             <div className="form-group">

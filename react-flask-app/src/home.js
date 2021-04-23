@@ -1,30 +1,29 @@
 import React from "react";
 import { Button, Dropdown} from 'react-bootstrap'
-import { useState, useEffect } from "react";
+import { useState} from "react";
 
 export default function Home(props) {
-
     const [message, setMessage] = useState('');
-    const [sender, setSender] = useState([]);
+    const [senderName] = useState(props.userName);
+    const [senderEmailAddress] = useState(props.emailAddress);
     const [receiver, setRecipient] = useState('');
+    const [receiverEmailAddress, setReceiverEmailAddress] = useState('');
     const [receiverList, setReceiverList] = useState([])
 
+    //console.log("sender name ",senderName);
+    //console.log("emailAddress ",senderEmailAddress);
+    
 
-    useEffect(() => {
-        
-        setSender([{'id': props.uid, 'name': props.uname}]);
-
-    }, []);
-
-    const  senders  = sender;
-
+    const  senders  = [{"emailAddress":senderEmailAddress,"userName":senderName }];
+    
+    //console.log("senders ",senders);
     let senderList = senders.length > 0
     	&& senders.map((item, i) => {
       return (
-        <Dropdown.Item key={i} value={item.id}>{item.name}</Dropdown.Item>
+        <Dropdown.Item key={i} value={item.emailAddress}>{item.userName}</Dropdown.Item>
       )
     }, this);
-
+    //console.log("senderList ",senderList);
 
     function handleSendMessage() {
         
@@ -34,14 +33,15 @@ export default function Home(props) {
             headers: { 'Access-Control-Request-Method': 'POST'
             , 'Access-Control-Request-Headers': '*'},
             body: JSON.stringify({ 
-                'sender': sender.name,
-                'receiver': receiver,
+                'sender': senderEmailAddress,
+                'receiver': receiverEmailAddress,
                 'message': message
               })
         };
 
         fetch('https://3qtp6ozrn9.execute-api.us-east-2.amazonaws.com/default/sendMessage', requestOptions)
         .then(response => {
+            
             if (!response.ok) {
                 
                 const error = "There was some problem in the request. Please try again."
@@ -60,9 +60,6 @@ export default function Home(props) {
             console.error('There was an error!', error);
             alert(error)
         });
-    
-
-
     }
 
     function handleMessageChange(e) {
@@ -71,16 +68,11 @@ export default function Home(props) {
 
     }
 
-
-    function handleSenderList(e) {
-
-        setSender(e.target.innerHTML)
-
-    }
-
     function handleReceivers(e) {
-
-        setRecipient(e.target.innerHTML)
+        
+        setRecipient(e.target.innerHTML);
+        setReceiverEmailAddress(e.target.getAttribute("value"));
+        console.log(receiverEmailAddress);
 
     }
 
@@ -118,23 +110,13 @@ export default function Home(props) {
 
     }
 
-    const  recipients  = receiverList;
 
-    let recipientsList = recipients.length > 0
-    	&& recipients.map((item, i) => {
+    let recipientsList = receiverList.length > 0
+    	&& receiverList.map((item, i) => {
       return (
         <Dropdown.Item key={i} value={item.emailAddress} onClick={handleReceivers}>{item.displayName}</Dropdown.Item>
       )
     }, this);
-
-
-    function displaySenderReceiverSelected() {
-        if (receiver.name != '' || typeof receiver.name === 'undefined') {
-            //alert('true'+receiver.name+'ello')
-            return (props.uname + ' - ' + receiver.name)
-        }
-    }
-    
 
     return(
         <div>
@@ -148,7 +130,6 @@ export default function Home(props) {
                                 <Dropdown.Toggle variant="secondary" id="dropdown-basic">
                                     Sender
                                 </Dropdown.Toggle>
-
                                 <Dropdown.Menu>
                                     {senderList}
                                 </Dropdown.Menu>
@@ -160,7 +141,6 @@ export default function Home(props) {
                                 <Dropdown.Toggle variant="secondary" id="dropdown-basic">
                                     Recipient
                                 </Dropdown.Toggle>
-
                                 <Dropdown.Menu>
                                     {recipientsList}
                                 </Dropdown.Menu>

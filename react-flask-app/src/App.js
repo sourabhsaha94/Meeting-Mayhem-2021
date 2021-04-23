@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import { BrowserRouter as Router, Switch, Route} from "react-router-dom";
 
@@ -12,26 +12,13 @@ import './App.css';
 
 function App() {
 
-const [currentTime, setCurrentTime] = useState(0);
-
-  // useEffect(() => {
-  //   setInterval(async () => {
-  //     fetch('/time').then(res => res.json()).then(data => {
-  //       setCurrentTime(data.time);
-  //     });
-  //   }, 2000);
-  // }, []);
-
   return (<Router>
     <div className="App">
-      
-    {/* <p>The current time iss {currentTime}.</p> */}
       <div>
         <div>
           
           <Switch>
             <Route exact path='/' component={Login} />
-            {/* <Route path="/sign-up" component={SignUp} /> */}
             <Route path="/home" component={Main} />
           </Switch>
           

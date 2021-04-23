@@ -9,16 +9,16 @@ import {useState, useEffect} from "react";
 export default function Main(props) {
 
 
-    const [showHomeScreen, setShowHomeScreen] = useState(true);
+    const [showHomeScreen, setShowHomeScreen] = useState(false);
     const [showSentMessagesScreen, setShowSentMessagesScreen] = useState(false);
     const [showReceivedMessagesScreen, setShowReceivedMessagesScreen] = useState(false); 
-    const [uid, setUID] = useState('');
-
-    console.log(props)
+    const [emailAddress, setEmailAddress] = useState('');
+    const [userName, setUserName] = useState('');
 
     useEffect(() => {
-        
-        setUID(props.location.state.uid)
+        setEmailAddress(props.location.state.emailAddress);
+        setUserName(props.location.state.userName);
+        setShowHomeScreen(true);
 
     }, []);
 
@@ -65,15 +65,15 @@ export default function Main(props) {
                                     <Nav.Link onClick={receivedMessagesClicked}>Received Messages</Nav.Link>
                                 </Nav>
                                 <Nav>
-                                    <Nav className="navbar-brand pull-right">Hi {props.location.state.uname} !</Nav></Nav>
+                                    <Nav className="navbar-brand pull-right">Hi {userName} !</Nav></Nav>
                                 <Nav>
                                     <Nav.Link className="navbar-brand pull-right" href="/">Logout</Nav.Link></Nav>
                             </Navbar.Collapse>
                         </Navbar> 
 
                     {showSentMessagesScreen && <SentMessages/>}
-                    {showReceivedMessagesScreen && <ReceivedMessages uid={uid} uname={props.location.state.uname}/>}
-                    {showHomeScreen && <Home uid={uid} uname={props.location.state.uname}/>}
+                    {showReceivedMessagesScreen && <ReceivedMessages emailAddress={emailAddress} userName={userName}/>}
+                    {showHomeScreen && <Home emailAddress={emailAddress} userName={userName}/>}
 
                 </div>
             </div>
