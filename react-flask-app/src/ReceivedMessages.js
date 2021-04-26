@@ -20,7 +20,7 @@ export default function ReceivedMessages(props) {
 
 
 useEffect(() => {
-    setReceiver([{'id': props.uid, 'name': props.uname}]);
+    setReceiver(props.emailAddress);
   }, []);
   //handleReceiveMessages()
   setInterval(() => handleReceiveMessages(), 5000);
