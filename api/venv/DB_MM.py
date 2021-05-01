@@ -1,9 +1,10 @@
 
 """
 File:    DB_MM.py
-Author:  Richard Baldwin
-Date:    10/2/2020
-E-mail:  richardbaldwin@umbc.edu
+Author:  Julia Nau, Richard Baldwin
+Date:    5/1/2021
+E-mail: jnau1@umbc.edu
+		richardbaldwin@umbc.edu
 Description: this manages DB thigs and password things
 
 """
@@ -41,15 +42,14 @@ each database object is a class the db.Model is needed for this
 UserMixin is used to manage some functionality for login stuff
 """
 #user data such as login stuff
-class Userdata(db.Model, UserMixin):
+class User(db.Model, UserMixin):
 	id = db.Column(db.Integer, primary_key=True) #this is the id for the DB entry
+	email = db.Column(db.String)
 	username = db.Column(db.String(20), unique=True, nullable=False)
 	password = db.Column(db.String(60), nullable=False)
-	role1 = db.Column(db.String(20), nullable=False) #this is the users role
-	role2 = db.Column(db.String(20)) #if the user is GM, the second role tells their main role
 	#this binds the user to their messages
-	sent_messages = db.relationship('UserSentMessages', backref = "username", lazy=True)
-
+	#sent_messages = db.relationship('UserSentMessages', backref = "username", lazy=True)
+'''
 #user messages
 class UserSentMessages(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
@@ -397,3 +397,4 @@ def passwordCheck(hashToCompare, passwordToCheck):
 	#TODO: password for Alice is 'a', password given is 'a', but they don't match.
 	print("passwordCheck",hashToCompare,passwordToCheck,passwordHashGen(passwordToCheck),flush=True)
 	return(bcrypt.check_password_hash(hashToCompare, passwordToCheck))
+'''
