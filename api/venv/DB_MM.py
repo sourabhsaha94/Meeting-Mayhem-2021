@@ -49,6 +49,22 @@ class User(db.Model, UserMixin):
 	password = db.Column(db.String(60), nullable=False)
 	#this binds the user to their messages
 	#sent_messages = db.relationship('UserSentMessages', backref = "username", lazy=True)
+
+'''
+interface w/ db
+
+#ready data for db input
+message = UserSentMessages(sender=submitedMessage["Sender"], recipient=submitedMessage["Recipient"], time_choice=submitedMessage["Time"],
+	place_choice=submitedMessage["Place"], key_choice=submitedMessage["Key"], message=submitedMessage["Message"],
+	encrypt_check=submitedMessage["Encrypt"], message_id=messageID, originalSender = originalSender, round_number=submitedMessage["Round"],
+	user_id = userID)
+#submit db
+db.session.add(message)
+#commit db
+db.session.commit()
+
+#get all messages from UserSentMessages where recipient is our user
+messageList = UserSentMessages.query.filter_by(recipient=usernameInput).all()
 '''
 #user messages
 class UserSentMessages(db.Model):
@@ -114,7 +130,6 @@ def addMessageToDB(submitedMessage, userID, messageIsModded = False, oMessage = 
 	db.session.add(message)
 	#commit db
 	db.session.commit()
-
 #pull messages from db
 def getUserMessageFromDB(usernameInput, gameRound = -1):
 	#get all messages from UserSentMessages where recipient is our user
@@ -198,10 +213,9 @@ def messageSplit(messages):
 
 	return(Round, Sender, Recipient, Time, Place, Key, Encrypt, MessageText, MessageID, OriginalSender)
 #adds user to db
-def addUserDB(usernameInput, passwordInput, role1Input, role2Input = "", autoRollback = True):
-
+def addUserDB(usernameInput, passwordInput, emailInput, autoRollback = True):
 	try:
-		user = Userdata(username = usernameInput, password = passwordInput, role1 = role1Input, role2 = role2Input)
+		user = Userdata(username = usernameInput, password = passwordInput, email = emailInput)
 		#submit db
 		db.session.add(user)
 		#commit db
@@ -209,15 +223,9 @@ def addUserDB(usernameInput, passwordInput, role1Input, role2Input = "", autoRol
 	except exc.IntegrityError:
 		if autoRollback:
 			db.session.rollback()
-
-#updates gm role after setup
-def updateGMRole(newRole):
-	gm = Userdata.query.filter_by(username="GM").first()
-	gm.role2 = newRole
 #setup db
 def dbInit():
 	print("dbInit() starting",flush=True)
-
 	#TODO: consider if necessary.
 	#check if paused file exists, set pause if true
 	with open("pause.txt", "r") as pauseFile:
