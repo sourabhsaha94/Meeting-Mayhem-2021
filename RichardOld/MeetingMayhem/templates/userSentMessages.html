@@ -1,0 +1,61 @@
+<!-- 
+File:    userSentMessages.html
+Author:  Richard Baldwin
+Date:    10/2/2020
+E-mail:  richardbaldwin@umbc.edu
+Description: holds users page
+ -->
+
+{% extends "userMain.html" %}
+
+<!-- main Content -->
+{% block subContent %}
+<div class="w3-main">
+  <div class="w3-row-padding w3-padding-64">
+<form>
+<!-- output messages -->
+<input type="submit" name="setRefMessage" value="Set selected message as reference"class="w3-bar-item w3-button w3-large w3-theme-l4 w3-hover-black">
+{% for i in range(messageNum) %}	      
+<div class="w3-container w3-card-4">
+  <input type="radio" name="refChoice" value={{i}} class="w3-radio">
+  <label class="w3-xxlarge">Message for {{Recipient[i]}} from round {{Round[i]}}</label>
+	<table class="w3-table w3-striped w3-bordered">
+	<thead>
+	<tr class="w3-theme">
+	  <th>Sender</th>
+	  <th>Recipient</th>
+	  <th>Time</th>
+	  <th>Place</th>
+	  <th>Key</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+	  <td>{{Sender[i]}}</td>
+	  <td>{{Recipient[i]}}</td>
+	  <td>{{Time[i]}}</td>
+	  <td>{{Place[i]}}</td>
+	  <td>{{Key[i]}}</td>
+	</tr>
+	</tbody>
+	</table>
+	<table class="w3-table w3-striped w3-bordered">
+	<thead>
+	<tr class="w3-theme-l1">
+	  <th>Message</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+	  <td>{{MessageText[i]}}</td>
+	</tr>
+	</tbody>
+	</table>
+
+</div>
+<div class="w3-padding-16"></div>
+{% endfor %}
+</form>
+</div>
+</div>
+{% endblock subContent %}

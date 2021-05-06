@@ -1,0 +1,23 @@
+<!-- 
+File:    userMain.html
+Author:  Richard Baldwin
+Date:    10/2/2020
+E-mail:  richardbaldwin@umbc.edu
+Description: holds users page
+ -->
+
+{% extends "advHome.html" %}
+<!-- sidebar Content -->
+{% block gmSidebar %}
+
+<div class="w3-dropdown-hover">
+  <button class="w3-button w3-bar-item w3-theme"> GM Controls<i class="fa fa-caret-down"></i></button>
+  <div class="w3-dropdown-content w3-bar-block w3-border">
+    {{form.csrf_token}}
+    <input type="submit" name="gameState" value="Start Game" class="w3-bar-item w3-button">
+    <input type="submit" name="encryptEnable" value="Enable Encryption" class="w3-bar-item w3-button">
+    <input type="submit" name="gameState" value="End Game" class="w3-bar-item w3-button">
+  </div>
+</div>
+
+{% endblock gmSidebar %}

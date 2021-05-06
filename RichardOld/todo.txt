@@ -1,0 +1,9 @@
+done?	task
+y	login form
+y	fix footer and sidebar
+n	connect login to DB
+n	create login info
+n	game start menu
+y	split .py files
+n	figure out how to make this run with more than 1 group
+n	create all pages

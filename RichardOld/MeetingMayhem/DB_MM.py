@@ -1,35 +1,28 @@
-
+ 
 """
 File:    DB_MM.py
-Author:  Julia Nau, Richard Baldwin
-Date:    5/1/2021
-E-mail: jnau1@umbc.edu
-		richardbaldwin@umbc.edu
+Author:  Richard Baldwin
+Date:    10/2/2020
+E-mail:  richardbaldwin@umbc.edu
 Description: this manages DB thigs and password things
-
+      
 """
-#from MeetingMayhem import db, DB_FILE_NAME, PW_File, loginManager, bcrypt
-from venv import db, DB_FILE_NAME, PW_File, loginManager, bcrypt
+from MeetingMayhem import db, DB_FILE_NAME, PW_File, loginManager, bcrypt
 from flask_login import UserMixin
 import subprocess
 from datetime import datetime
 import secrets
 import string
 
-#TODO: Remove this, it's only for testing one error.
-from flask_sqlalchemy import SQLAlchemy #this is for managing databases
-from sqlalchemy import exc, func
 
 #constants
 #all letters and numbers for random PW generation
-CHARLIST = string.ascii_letters + string.digits
+CHARLIST = string.ascii_letters + string.digits 
 #global vars
-#TODO: dynamically update messageIDCount based on the database's state
 messageIDCount = 0 #this isitterated as time goes on, might move
 messageIDList = [] #this holds all message id's for checking
-#this is the location for the flask app, can be automated later
-workingFolder = "/" #TODO: Figure this out
-
+#this is the location for the flaks app, can be automated later
+workingFolder = "/home/eyeclept/Documents/FlaskGame/test/MeetingMayhem/" 
 
 #need for login, loads user
 @loginManager.user_loader
@@ -42,30 +35,15 @@ each database object is a class the db.Model is needed for this
 UserMixin is used to manage some functionality for login stuff
 """
 #user data such as login stuff
-class User(db.Model, UserMixin):
+class Userdata(db.Model, UserMixin):
 	id = db.Column(db.Integer, primary_key=True) #this is the id for the DB entry
-	email = db.Column(db.String)
-	username = db.Column(db.String(20), unique=True, nullable=False)
+	username = db.Column(db.String(20), unique=True, nullable=False) 
 	password = db.Column(db.String(60), nullable=False)
+	role1 = db.Column(db.String(20), nullable=False) #this is the users role
+	role2 = db.Column(db.String(20)) #if the user is GM, the second role tells their main role
 	#this binds the user to their messages
-	#sent_messages = db.relationship('UserSentMessages', backref = "username", lazy=True)
+	sent_messages = db.relationship('UserSentMessages', backref = "username", lazy=True)
 
-'''
-interface w/ db
-
-#ready data for db input
-message = UserSentMessages(sender=submitedMessage["Sender"], recipient=submitedMessage["Recipient"], time_choice=submitedMessage["Time"],
-	place_choice=submitedMessage["Place"], key_choice=submitedMessage["Key"], message=submitedMessage["Message"],
-	encrypt_check=submitedMessage["Encrypt"], message_id=messageID, originalSender = originalSender, round_number=submitedMessage["Round"],
-	user_id = userID)
-#submit db
-db.session.add(message)
-#commit db
-db.session.commit()
-
-#get all messages from UserSentMessages where recipient is our user
-messageList = UserSentMessages.query.filter_by(recipient=usernameInput).all()
-'''
 #user messages
 class UserSentMessages(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
@@ -80,33 +58,18 @@ class UserSentMessages(db.Model):
 	#this is from
 	user_id = db.Column(db.Integer, db.ForeignKey('userdata.id'), nullable=False)
 	#this is the same as sender unless modefied by the adversary
-	originalSender = db.Column(db.String(20), nullable=False)
+	originalSender = db.Column(db.String(20), nullable=False) 
 	round_number = db.Column(db.Integer, nullable=False)
-
-def sendMessage(sender,receiver,text):
-
-	print("sendMessage sender", sender, sender[0], flush=True)
-	#TODO: unify receiver vs recipient vs... destination?
-	messageDict = {"Round":-1, "Sender":sender[0]['name'], "Recipient":receiver,
-	"Time":1,  "Place":1, "Key":1,
-	"Encrypt":False, "Message":text,  "MessageID":1,
-	"OriginalSender":sender}
-
-	userID = sender[0]['id'] #TODO: this could eventually be adversary?
-
-	addMessageToDB(messageDict, userID)
-
 
 #functions
 #add messages to db
 def addMessageToDB(submitedMessage, userID, messageIsModded = False, oMessage = {}):
-	global messageIDCount
 	#if messageIsModded, add to appropreate DB
 	# update ID
 	if messageIsModded:
 		#ready data for db input
-		messageID=oMessage["MessageID"]
-		originalSender = oMessage["Sender"]
+		messageID=oMessage["MessageID"] 
+		originalSender = oMessage["Sender"] 
 	else:
 		#increment message count
 		messageIDCount += 1
@@ -115,16 +78,13 @@ def addMessageToDB(submitedMessage, userID, messageIsModded = False, oMessage = 
 		while messageID in messageIDList:
 			messageID += 1
 		#add new id to list
-		#messageIDList.add(messageID)
-		messageIDList.append(messageID)
+		messageIDList.add(messageID)		
 		#ready data for db input
-		originalSender = submitedMessage["Sender"]
-
-		print("addMessage submittedMessage",submitedMessage,flush=True)
+		originalSender = submitedMessage["Sender"] 
 	#ready data for db input
-	message = UserSentMessages(sender=submitedMessage["Sender"], recipient=submitedMessage["Recipient"], time_choice=submitedMessage["Time"],
+	message = UserSentMessages(sender=submitedMessage["Sender"], recipient=submitedMessage["Recipient"], time_choice=submitedMessage["Time"], 
 		place_choice=submitedMessage["Place"], key_choice=submitedMessage["Key"], message=submitedMessage["Message"],
-		encrypt_check=submitedMessage["Encrypt"], message_id=messageID, originalSender = originalSender, round_number=submitedMessage["Round"],
+		encrypt_check=submitedMessage["Encrypt"], message_id=messageID, originalSender = originalSender, round_number=submitedMessage["Round"], 
 		user_id = userID)
 	#submit db
 	db.session.add(message)
@@ -132,12 +92,11 @@ def addMessageToDB(submitedMessage, userID, messageIsModded = False, oMessage = 
 	db.session.commit()
 #pull messages from db
 def getUserMessageFromDB(usernameInput, gameRound = -1):
-	#get all messages from UserSentMessages where recipient is our user
-	messageList = UserSentMessages.query.filter_by(recipient=usernameInput).all()
-
-	print("getUserMessageFromDB",messageList,flush=True)
+	#get user from username
+	user = Userdata.query.filter_by(username=usernameInput).first()
+	#get users messages
+	messageList = user.UserSentMessages
 	formattedMessageList = []
-	#TODO: format game round in the SQL query instead?
 	if gameRound == -1:
 		#if no gameround chosen, return all messages
 		for message in messageList:
@@ -150,8 +109,8 @@ def getUserMessageFromDB(usernameInput, gameRound = -1):
 	return(formattedMessageList)
 # takes message from db, and outputs it as dict
 def formatMessagesFromDB(messageInput):
-	messageDict = {"Round":messageInput.round_number, "Sender":messageInput.sender, "Recipient":messageInput.recipient, "Time":messageInput.time_choice,
-				"Place":messageInput.place_choice, "Key":messageInput.key_choice, "Encrypt":messageInput.encrypt_check, "Message":messageInput.message,
+	messageDict = {"Round":messageInput.round_number, "Sender":messageInput.sender, "Recipient":messageInput.recipient, "Time":messageInput.time_choice, 
+				"Place":messageInput.place_choice, "Key":messageInput.key_choice, "Encrypt":messageInput.encrypt_check, "Message":messageInput.message, 
 				"MessageID":messageInput.message_id, "OriginalSender":messageInput.originalSender}
 
 	#Formating-> round (integer), sender (string), recipient (string), time_choice (int), place
@@ -213,29 +172,18 @@ def messageSplit(messages):
 
 	return(Round, Sender, Recipient, Time, Place, Key, Encrypt, MessageText, MessageID, OriginalSender)
 #adds user to db
-def addUserDB(usernameInput, passwordInput, emailInput, autoRollback = True):
-	try:
-		user = Userdata(username = usernameInput, password = passwordInput, email = emailInput)
-		#submit db
-		db.session.add(user)
-		#commit db
-		db.session.commit()
-	except exc.IntegrityError:
-		if autoRollback:
-			db.session.rollback()
+def addUserDB(usernameInput, passwordInput, role1Input, role2Input = ""):
+	user = Userdata(username = usernameInput, password = passwordInput, role1 = role1Input, role2 = role2Input)
+	#submit db
+	db.session.add(user)
+	#commit db
+	db.session.commit()	
+#updates gm role after setup
+def updateGMRole(newRole):
+	gm = Userdata.query.filter_by(username="GM").first()
+	gm.role2 = newRole
 #setup db
 def dbInit():
-	"""
-	this function sets up the database.
-	there is a file called pause.txt in ____. this is used to put the game on hold
-	if it is paused, the DB won't be archived, and a new db won't be created.
-
-	in the current itteration, the pasued file is ignored and will be implemented later
-	the database is always backed up and recreated
-	"""
-	print("dbInit() starting",flush=True)
-	# backup and delete db
-	#TODO: consider if necessary.
 	#check if paused file exists, set pause if true
 	with open("pause.txt", "r") as pauseFile:
 		pausedRaw = pauseFile.read()
@@ -245,11 +193,10 @@ def dbInit():
 			paused = False
 	if paused:
 		#if paused, mark paused file as false. i.e. unpause
-		print("Am paused!",flush=True)
 		with open("pause.txt", "w") as pauseFile:
 			pauseFile.write("False")
 	else:
-		#else backup and delete old db, and create new DB.
+		#else backup and delete old db, and create new DB. 
 		#get time info
 		timeStr = getTime()
 		#backup and delete db
@@ -258,45 +205,14 @@ def dbInit():
 		db.create_all()
 
 		#move pwfile to match backup db, delet pw file
-		backupFileName = timeStr + "--" + PW_File + ".bak"
-		copy(PW_File, backupFileName)
+		backupFlieName = timeStr + "--" + PW_File + ".bak"
+		copy(PW_File, backupFlieName)
 		deleteFile(PW_File)
 
-		try:
-			addUserDB("GM", encryptedPassword, "GM", "Spectator")
-		except: #TODO: You can do this but you shouldn't
-			print("Whoops! We've already added GM!",flush=True)
-			db.session.rollback() #fail gracefully, reset the cursor to prior state to "clear" the bad addition.
-			#return False
-		#print("passed the add GM line",flush=True)
-
-		#make messageIDCount reflect the next message ID to be given
-		#check database for existing messages, get max.
-		global messageIDCount
-		messageIDCount = db.session.query(func.max(UserSentMessages.message_id)).scalar()
-
-		print("  max ID",messageIDCount,flush=True)
-		#print("past max ID",flush=True)
-
-
-		with open("loginDefault.txt", "r") as loginFile:
-			lines = list(loginFile)
-			print("Lines:")
-			print(lines,flush=True)
-			for line in lines:
-				a = line.split(":")
-				if a[0] == "GM":
-					continue
-				#TODO: remove/integrate userGen()
-				#print("making user",a[0],flush=True)
-				CreateUser("User",a[0],a[1]) #pwLen is defaulted #
-
-		print("passed the login Default line",flush=True)
-
-		#TODO: Figure out why dbInit gets called more than once sometimes
-		#Apparently that's "because of the Reloader"
-		#TODO: remove this very risky, confusing workaround
-		#dbInit.code = (lambda:None).code
+		#generate GM
+		encryptedPassword = initGMSetup()
+		addUserDB("GM", encryptedPassword, "GM", "Spectator")
+		print("GM user added")
 #close db
 def dbExit(pause = False):
 	if pause:
@@ -314,9 +230,9 @@ def dbExit(pause = False):
 #backup db
 def backupNDeleteDB(timeStr):
 		#format backup file name
-		backupFileName = timeStr + "--" + DB_FILE_NAME + ".bak"
+		backupFlieName = timeStr + "--" + DB_FILE_NAME + ".bak"
 		#copy backup file
-		copy(DB_FILE_NAME, backupFileName)
+		copy(DB_FILE_NAME, backupFlieName)
 		#delete db file
 		deleteFile(DB_FILE_NAME)
 #Get time formatted
@@ -326,20 +242,10 @@ def getTime():
 	return(timeStr)
 #checks if user can login
 def checkUserLogin(usernameInput, passwordInput):
-	print("checkUserLogin:", usernameInput, passwordInput, flush=True)
 	userToCheck = Userdata.query.filter_by(username=usernameInput).first()
-
-	print("checkUserLogin query:", userToCheck,flush=True)
-
-	passCheckResult = passwordCheck(userToCheck.password, passwordInput)
-	if userToCheck and passCheckResult:
+	if userToCheck and passwordCheck(userToCheck.password, passwordInput):
 		return(True, userToCheck)
 	else:
-		#TODO: it is insecure to tell the user if it's username wrong or password wrong
-		if not userToCheck:
-			print("user not found?",flush=True)
-		if not passCheckResult:
-			print("Wrong password!",flush=True)
 		return(False, userToCheck)
 #copy files
 def copy(src, dst):
@@ -372,13 +278,10 @@ def userGen(GMisAdversary = True, users = ["Alice", "Bob", "Charlie", "Dan", "Ev
 #creates user w/ random password (can be found in login.txt)
 def CreateUser(role, name, pwLen = 12):
 	#generate username and password for GM
-	#TODO: Revert/update this to make actually secure passwords
-	#password = PasswordGen(pwLen)
-	password = "password"
-
+	password = PasswordGen(pwLen)
 	#output info to file
 	with open(PW_File, "a") as loginInfoFile:
-		info = name + ":" + password + "\n"
+		info = name + ":" + password + "\n" 
 		loginInfoFile.write(info)
 
 	#encrypt password
@@ -399,7 +302,7 @@ def initGMSetup(pwLen = 12):
 	password = PasswordGen(pwLen)
 	#output info to file
 	with open(PW_File, "a") as loginInfoFile:
-		info = "GM:" + password + "\n"
+		info = "GM:" + password + "\n" 
 		loginInfoFile.write(info)
 
 	#encrypt password
@@ -408,7 +311,4 @@ def initGMSetup(pwLen = 12):
 	#add gm to db from MeetingMayhem.DB_MM import addUserDB, updateGMRole
 #check password for login
 def passwordCheck(hashToCompare, passwordToCheck):
-	#TODO: password for Alice is 'a', password given is 'a', but they don't match.
-	print("passwordCheck",hashToCompare,passwordToCheck,passwordHashGen(passwordToCheck),flush=True)
 	return(bcrypt.check_password_hash(hashToCompare, passwordToCheck))
-'''

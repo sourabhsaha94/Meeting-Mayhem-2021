@@ -1,0 +1,2 @@
+python3 MeetingMayhemInit.py
+python3 MeetingMayhemLaunch.py

@@ -1,0 +1,62 @@
+<!-- 
+File:    userSentMessages.html
+Author:  Richard Baldwin
+Date:    10/2/2020
+E-mail:  richardbaldwin@umbc.edu
+Description: holds users page
+ -->
+
+{% extends "base.html" %}
+
+<!-- navbar Content -->
+{% block navbar %}
+<a class="w3-bar-item w3-theme-l1">Meeting Mayhem Login</a>
+{% endblock navbar %}
+
+<!-- main Content -->
+{% block content %}
+
+<div class="w3-main">
+  <div class="w3-row-padding w3-padding-64">
+
+<!-- output flassed messages -->
+	<form method="POST" class="w3-container w3-card-4">
+	  <h2>Gm as Adversary</h2>
+	  {{ form.csrf_token }}
+	  <div class="w3-section">   
+	  	{{form.GMasAdv(class="w3-check")}}
+	    <label>{{form.GMasAdv.label}}</label>
+	  </div>
+	  <h2>User setup</h2>
+	  <div class="w3-section">   
+	  	{{form.user1(class="w3-input")}}
+	    <label>{{form.user1.label}}</label>
+	  </div>
+	  <div class="w3-section">      
+	  	{{form.user2(class="w3-input")}}
+	    <label>{{form.user2.label}}</label>
+	  </div>
+	  <div class="w3-section">   
+	  	{{form.user3(class="w3-input")}}
+	    <label>{{form.user3.label}}</label>
+	  </div>
+	  <div class="w3-section">      
+	  	{{form.user4(class="w3-input")}}
+	    <label>{{form.user4.label}}</label>
+	  </div>
+	  <div class="w3-section">      
+	  	{{form.user5(class="w3-input")}}
+	    <label>{{form.user5.label}}</label>
+	  </div>
+	  <h2>Number of spectators (min of 1)</h2>
+	  <div class="w3-section">   
+	  	{{form.numSpec(class="w3-input")}}
+	    <label>{{form.numSpec.label}}</label>
+	  </div>
+	  <div class="w3-section">
+	  	  {{ form.submit(class="w3-button w3-theme") }}
+	  </div>
+	</form>
+  </div>
+</div>
+{% endblock content %}

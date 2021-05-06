@@ -1,0 +1,58 @@
+<!-- 
+File:    userSentMessages.html
+Author:  Richard Baldwin
+Date:    10/2/2020
+E-mail:  richardbaldwin@umbc.edu
+Description: holds users page
+ -->
+
+{% extends "userMain.html" %}
+
+<!-- main Content -->
+{% block subContent %}
+<div class="w3-main">
+  <div class="w3-row-padding w3-padding-64">
+
+<div class="w3-container w3-card-4">
+  <h2>Reference Box</h2>
+
+  <div class="w3-container w3-card-4">
+  <table class="w3-table w3-striped w3-bordered">
+  <thead>
+  <tr class="w3-theme">
+    <th>Sender</th>
+    <th>Recipient</th>
+    <th>Time</th>
+    <th>Place</th>
+    <th>Key</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td>Bob</td>
+    <td>Alice</td>
+    <td>12pm</td>
+    <td>Park</td>
+    <td>Alice-PubKey</td>
+  </tr>
+  </tbody>
+  </table>
+  <table class="w3-table w3-striped w3-bordered">
+  <thead>
+  <tr class="w3-theme-l1">
+    <th>Message</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td>Hello World!</td>
+  </tr>
+  </tbody>
+  </table>
+  </div>
+
+</div>
+
+</div>
+</div>
+{% endblock subContent %}

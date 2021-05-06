@@ -1,0 +1,155 @@
+<!-- 
+File:    userMain.html
+Author:  Richard Baldwin
+Date:    10/2/2020
+E-mail:  richardbaldwin@umbc.edu
+Description: holds users page
+ -->
+
+{% extends "advMain.html" %}
+
+<!-- sidebar Content -->
+{% block subSidebar %}
+<nav class="w3-sidebar w3-bar-block w3-collapse w3-large w3-theme-l5 w3-animate-left" id="mySidebar">
+  <a href="javascript:void(0)" onclick="w3_close()" class="w3-right w3-xlarge w3-padding-large w3-hover-black w3-hide-large" title="Close Menu">
+    <i class="fa fa-remove"></i>
+  </a>
+
+  {% block gmSidebar %}{% endblock %}
+  <div class="w3-dropdown-hover">
+    <button class="w3-button w3-theme">Sender <i class="fa fa-caret-down"></i></button>
+    <!-- sender dropdown -->
+    <form class="w3-dropdown-content w3-bar-block w3-border">
+      {{form.csrf_token}}
+      {% for name in names %}
+      <input type="submit" name="sender" value={{name}} class="w3-bar-item w3-button">
+      {% endfor %}
+    </form>
+  </div>
+  <input type="submit" name="sendMessage" value="Send All Messages"class="w3-bar-item w3-button w3-hover-black">
+</nav>
+
+{% endblock subSidebar %}
+
+<!-- main Content -->
+{% block subContent %}
+<div class="w3-main" style="margin-left:250px">
+  <div class="w3-row-padding w3-padding-64">
+<!-- main message -->
+<div class="w3-container w3-card-4">
+  <h2>Message</h2>
+  <!-- to and from -->
+
+<div class="w3-twothird">
+  <div class="w3-dropdown-hover">
+    <button class="w3-button w3-theme">Sender <i class="fa fa-caret-down"></i></button>
+    <!-- sender dropdown -->
+    <form class="w3-dropdown-content w3-bar-block w3-border">
+      {{form.csrf_token}}
+      {% for name in names %}
+      <input type="submit" name="sender" value={{name}} class="w3-bar-item w3-button">
+      {% endfor %}
+    </form>
+  </div>
+
+  <!-- Reciever dropdown -->
+  <div class="w3-dropdown-hover">
+    <button class="w3-button w3-theme">Recipient <i class="fa fa-caret-down"></i></button>
+    <form class="w3-dropdown-content w3-bar-block w3-border">
+      {{form.csrf_token}}
+      {% for name in names %}
+      <input type="submit" name="recipient" value={{name}} class="w3-bar-item w3-button">
+      {% endfor %}
+    </form>
+  </div>
+
+  <!-- Time dropdown -->
+  <div class="w3-dropdown-hover">
+    <button class="w3-button w3-theme">Time <i class="fa fa-caret-down"></i></button>
+    <form class="w3-dropdown-content w3-bar-block w3-border">
+      {{form.csrf_token}}
+      {% for time in times %}
+      <input type="submit" name="timeChoice" value={{time}} class="w3-bar-item w3-button">
+      {% endfor %}
+    </form>
+  </div>
+
+  <!-- place dropdown -->
+  <div class="w3-dropdown-hover">
+    <button class="w3-button w3-theme">Place <i class="fa fa-caret-down"></i></button>
+    <form class="w3-dropdown-content w3-bar-block w3-border">
+      {{form.csrf_token}}
+      {% for place in places %}
+      <input type="submit" name="placeChoice" value={{place}} class="w3-bar-item w3-button">
+      {% endfor %}
+    </form>
+  </div>
+
+  <!-- key dropdown -->
+  <div class="w3-dropdown-hover">
+    <button class="w3-button w3-theme">Key <i class="fa fa-caret-down"></i></button>
+    <form class="w3-dropdown-content w3-bar-block w3-border">
+      {{form.csrf_token}}
+      {% for key in keys %}
+      <input type="submit" name="keyChoice" value={{key}} class="w3-bar-item w3-button">
+      {% endfor %}
+    </form>
+  </div>
+  </div>
+
+
+
+  <!-- Tool list -->
+  <div class="w3-third">
+    {{form.encryptCheck (class="w3-check")}}
+    <label>Encrypt</label>
+  </div>
+
+
+  <!-- message box -->
+  <div class="w3-section">      
+    {{form.messageContent (class="w3-input")}}
+    <label>Message</label>
+  </div>
+</div>
+
+ <!-- reference box -->
+<div class="w3-container w3-card-4">
+  <h2>Original Message</h2>
+
+<table class="w3-table w3-striped w3-bordered">
+<thead>
+<tr class="w3-theme">
+  <th>Sender</th>
+  <th>Recipient</th>
+  <th>Time</th>
+  <th>Place</th>
+  <th>Key</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Bob</td>
+  <td>Alice</td>
+  <td>12pm</td>
+  <td>Park</td>
+  <td>Alice-PubKey</td>
+</tr>
+</tbody>
+</table>
+<table class="w3-table w3-striped w3-bordered">
+<thead>
+<tr class="w3-theme-l1">
+  <th>Message</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Hello World!</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</div>
+{% endblock subContent %}

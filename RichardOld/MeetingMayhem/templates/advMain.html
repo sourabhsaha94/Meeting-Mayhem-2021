@@ -1,0 +1,29 @@
+<!-- 
+File:    userMain.html
+Author:  Richard Baldwin
+Date:    10/2/2020
+E-mail:  richardbaldwin@umbc.edu
+Description: holds users page
+ -->
+
+{% extends "base.html" %}
+
+<!-- navbar Content -->
+{% block navbar %}
+<a href="{{url_for('advHome')}}" class="w3-bar-item w3-button w3-theme-l1">Home</a>
+<a href="{{url_for('advMessages')}}" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Message Archive</a>
+{% endblock navbar %}
+
+<!-- sidebar Content -->
+{% block sidebar %}
+
+{% block subSidebar %}{% endblock%}
+
+{% endblock sidebar %}
+
+<!-- main Content -->
+{% block content %}
+
+{% block subContent %}{% endblock%}
+
+{% endblock content %}
