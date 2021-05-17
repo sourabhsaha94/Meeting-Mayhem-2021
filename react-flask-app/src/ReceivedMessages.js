@@ -1,32 +1,26 @@
 
 import React from "react";
 import BootstrapTable from 'react-bootstrap-table-next';
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 
 export default function ReceivedMessages(props) {
 
   const [receivedMessages, setreceivedMessages] = useState([]);
-  const [receiver, setReceiver] = useState([]);
+  const [receiver] = useState(props.emailAddress);
 
   const requestOptions = {
-    method: 'POST',
-    headers: { 'Access-Control-Request-Method': 'POST'
-    , 'Access-Control-Request-Headers': '*'},
-    body: JSON.stringify({ 
-        'user': receiver
-      })
+    method: 'GET',
+    headers: { 'Access-Control-Request-Method': 'GET'
+    , 'Access-Control-Request-Headers': '*'}
 };
 
-
-useEffect(() => {
-    setReceiver(props.emailAddress);
-  }, []);
-  //handleReceiveMessages()
+  handleReceiveMessages()
   setInterval(() => handleReceiveMessages(), 5000);
 
   function handleReceiveMessages() {
-    fetch('/getmessages', requestOptions)
+    //console.log("fetching");
+    fetch('https://k44erekqxe.execute-api.us-east-2.amazonaws.com/default/getMessages?receiver='+receiver, requestOptions)
     .then(response => {
     if (!response.ok) {
         const error = "There was some problem in the request. Please try again."
@@ -35,7 +29,8 @@ useEffect(() => {
   return response.json()
 })
 .then(data => {
-    setreceivedMessages(data.messages)
+  var m = JSON.parse(data.body);
+  setreceivedMessages(m)
 })
 .catch(error => {
     console.error('There was an error!', error);
@@ -61,8 +56,8 @@ useEffect(() => {
       <>
         <BootstrapTable 
         // caption={<CaptionElement />}
-        keyField='id' 
-        data={ receivedMessages } 
+        keyField='messageId' 
+        data={receivedMessages} 
         columns={ columns }
         striped
         hover
