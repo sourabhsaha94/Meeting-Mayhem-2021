@@ -1,0 +1,95 @@
+Logging user akriti: 0.0075
+Logging user akriti: 0.0015
+Logging user akriti: 0.0085
+Logging user akriti: 0.0022
+Logging user akriti: 0.0013
+Logging user akriti: 0.0076
+
+Lambda:
+Logging user 0.0155 // cold start
+Logging user 0.0047
+Logging user 0.0080
+Logging user 0.0075
+Logging user 0.0065
+Logging user 0.0085
+Logging user 0.0076
+
+Getting recipients: 0.0072
+Getting recipients: 0.0012
+Getting recipients: 0.0012
+Getting recipients: 0.0010
+Getting recipients: 0.0013
+Getting recipients: 0.0011
+Getting recipients: 0.0011
+Getting recipients: 0.0010
+Getting recipients: 0.0011
+Getting recipients: 0.0010
+Getting recipients: 0.0011
+
+Lambda:
+get recipients 0.0276 // cold start
+get recipients 0.0058
+get recipients 0.0055
+get recipients 0.0058
+get recipients 0.0059
+get recipients 0.0058
+get recipients 0.0074
+get recipients 0.0058
+get recipients 0.0056
+get recipients 0.0058
+get recipients 0.0052
+
+
+Send message: 0.0083
+Send message: 0.0076
+Send message: 0.0081
+Send message: 0.0084
+Send message: 0.0083
+Send message: 0.0115
+
+Lambda:
+Send message: 0.0442 // cold start
+Send message: 0.0066
+Send message: 0.0070
+Send message: 0.0063
+Send message: 0.0067
+Send message: 0.0065
+Send message: 0.0092
+Send message: 0.0082
+Send message: 0.0083
+Send message: 0.0083
+
+
+
+Get message: 0.0056
+Get message: 0.0073
+Get message: 0.0027
+Get message: 0.0029
+Get message: 0.0025
+Get message: 0.0038
+Get message: 0.0035
+Get message: 0.0040
+Get message: 0.0046
+Get message: 0.0142
+Get message: 0.0058
+Get message: 0.0045
+Get message: 0.0049
+Get message: 0.0058
+Get message: 0.0126
+
+Lambda:
+Get message: 0.0363 // cold start
+Get message: 0.0058
+Get message: 0.0065
+Get message: 0.0065
+Get message: 0.0110
+Get message: 0.0071
+Get message: 0.0055
+Get message: 0.0062
+Get message: 0.0066
+Get message: 0.0067
+Get message: 0.0073
+Get message: 0.0068
+Get message: 0.0061
+Get message: 0.0057
+Get message: 0.0065

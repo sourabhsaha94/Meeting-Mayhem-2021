@@ -35,7 +35,7 @@ export default function Home(props) {
                 })
             };
 
-            fetch('https://3qtp6ozrn9.execute-api.us-east-2.amazonaws.com/default/sendMessage', requestOptions)
+            fetch('/sendmessage', requestOptions)
             .then(response => {
                 
                 if (!response.ok) {

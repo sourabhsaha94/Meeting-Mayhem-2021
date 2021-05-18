@@ -1,13 +1,13 @@
 
 import React from "react";
 import BootstrapTable from 'react-bootstrap-table-next';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 
 export default function ReceivedMessages(props) {
 
   const [receivedMessages, setreceivedMessages] = useState([]);
-  const [receiver] = useState(props.emailAddress);
+  const [receiver, setReceiver] = useState([]);
 
   const requestOptions = {
     method: 'GET',
@@ -15,12 +15,15 @@ export default function ReceivedMessages(props) {
     , 'Access-Control-Request-Headers': '*'}
 };
 
-  handleReceiveMessages()
+
+useEffect(() => {
+    setReceiver(props.emailAddress);
+  }, []);
+  //handleReceiveMessages()
   setInterval(() => handleReceiveMessages(), 5000);
 
   function handleReceiveMessages() {
-    //console.log("fetching");
-    fetch('https://k44erekqxe.execute-api.us-east-2.amazonaws.com/default/getMessages?receiver='+receiver, requestOptions)
+    fetch('/getmessages?receiver='+receiver, requestOptions)
     .then(response => {
     if (!response.ok) {
         const error = "There was some problem in the request. Please try again."
@@ -29,7 +32,7 @@ export default function ReceivedMessages(props) {
   return response.json()
 })
 .then(data => {
-  var m = JSON.parse(data.body);
+  var m = JSON.parse(data.body)
   setreceivedMessages(m)
 })
 .catch(error => {
@@ -57,7 +60,7 @@ export default function ReceivedMessages(props) {
         <BootstrapTable 
         // caption={<CaptionElement />}
         keyField='messageId' 
-        data={receivedMessages} 
+        data={ receivedMessages } 
         columns={ columns }
         striped
         hover
